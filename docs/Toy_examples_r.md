@@ -1,11 +1,11 @@
 # Toy Examples in R
 In this document, we provide some toy examples in R for getting started. All the examples in this document and even more examples are available in [r-rlcard-tutorial/](https://github.com/datamllab/rlcard-tutorial).
 
-*   [Deep-Q learning_blackjack]()
+*   [Training DQN on Blackjack]()
 *   [Training CFR on Leduc Hold'em]()
 *   [Leduc Hold'em as single-agent environment]()
 *   [Texas Hold'em nolimit]()
-*   [Running Random agent_blackjack]()
+*   [Running Random agent on Blackjack]()
 
 ## Playing with Random Agents
 We have set up a random agent that can play randomly on each environment. An example of applying a random agent on Blackjack is as follow:
@@ -37,7 +37,7 @@ env$set_agents(list(agent_0))
 # Train.py
 for episode in range(episode_num):
 
-    # Generate data from the environment
+    # Generate data friom the environment
     trajectories, _ = env.run(is_training=False)
 
     # Print out the trajectories
