@@ -37,7 +37,6 @@ class EnvSpec(object):
         env = self._entry_point(config)
         return env
 
-
 class EnvRegistry(object):
     ''' Register an environment (game) by ID
     '''
