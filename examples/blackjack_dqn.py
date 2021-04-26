@@ -4,6 +4,7 @@
 import tensorflow as tf
 import os
 
+
 import rlcard
 from rlcard.agents import DQNAgent
 from rlcard.utils import set_global_seed, tournament
