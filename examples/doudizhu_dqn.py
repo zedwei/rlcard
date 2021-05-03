@@ -31,6 +31,12 @@ log_dir = './experiments/doudizhu_dqn_result/'
 # Set a global seed
 set_global_seed(0)
 
+# Mitigation for gpu memory issue
+# config = tf.ConfigProto()
+# config.gpu_options.allow_growth = True
+# config.gpu_options.per_process_gpu_memory_fraction = 0.9
+# with tf.Session(config=config) as sess:
+
 with tf.Session() as sess:
 
     # Initialize a global step

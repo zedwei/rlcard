@@ -1,4 +1,4 @@
-''' An example of learning a NFSP Agent on Dou Dizhu
+''' An example of learning a NFSP Agent on Tractor
 '''
 
 import tensorflow as tf
@@ -11,8 +11,8 @@ from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 
 # Make environment
-env = rlcard.make('doudizhu', config={'seed': 0})
-eval_env = rlcard.make('doudizhu', config={'seed': 0})
+env = rlcard.make('tractor', config={'seed': 0})
+eval_env = rlcard.make('tractor', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 1000
@@ -26,7 +26,7 @@ memory_init_size = 1000
 train_every = 64
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/doudizhu_nfsp_result/'
+log_dir = './experiments/tractor_nfsp_result/'
 
 # Set a global seed
 set_global_seed(0)
@@ -65,7 +65,7 @@ with tf.Session() as sess:
     random_agent = RandomAgent(action_num=eval_env.action_num)
 
     env.set_agents(agents)
-    eval_env.set_agents([agents[0], random_agent, random_agent])
+    eval_env.set_agents([agents[0], random_agent, random_agent, random_agent])
 
     # Initialize global variables
     sess.run(tf.global_variables_initializer())
@@ -99,7 +99,7 @@ with tf.Session() as sess:
     logger.plot('NFSP')
     
     # Save model
-    save_dir = 'models/doudizhu_nfsp'
+    save_dir = 'models/tractor_nfsp'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     saver = tf.train.Saver()

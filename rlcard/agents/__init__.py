@@ -5,7 +5,7 @@ from distutils.version import LooseVersion
 reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
 installed_packages = [r.decode().split('==')[0] for r in reqs.split()]
 
-if 'tensorflow' in installed_packages:
+if 'tensorflow-gpu' in installed_packages or 'tensorflow' in installed_packages:
     import tensorflow as tf
     if LooseVersion(tf.__version__) < LooseVersion('1.14.0') \
             or LooseVersion(tf.__version__) >= LooseVersion('2.0.0'):

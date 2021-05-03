@@ -21,7 +21,7 @@ class EnvSpec(object):
 
         Args:
             env_id (string): The name of the environent
-            entry_point (string): A string the indicates the location of the envronment class
+            entry_point (string): A string the indicates the location of the environment class
         '''
         self.env_id = env_id
         mod_name, class_name = entry_point.split(':')

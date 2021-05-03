@@ -183,8 +183,7 @@ class DoudizhuGame(object):
 
     def _get_others_current_hand(self, player):
         player_up = self.players[get_upstream_player_id(player, self.players)]
-        player_down = self.players[get_downstream_player_id(
-            player, self.players)]
+        player_down = self.players[get_downstream_player_id(player, self.players)]
         others_hand = merge(player_up.current_hand, player_down.current_hand, key=functools.cmp_to_key(doudizhu_sort_card))
         return cards2str(others_hand)
 
