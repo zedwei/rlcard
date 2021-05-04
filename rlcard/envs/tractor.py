@@ -38,8 +38,10 @@ class TractorEnv(Env):
             obs[index][0] = np.ones(54, dtype=int)
         encode_cards(obs[0], state['current_hand'])
         encode_cards(obs[1], state['others_hand'][0])
+        
         # self._encode_cards(obs[2], state['others_hand'][1])
         # self._encode_cards(obs[3], state['others_hand'][2])
+        
         current_round = [x.split(',') for x in state['current_round'] if x != None]
         if (len(current_round) > 0):
             current_round = functools.reduce(lambda z,y : z + y, current_round)

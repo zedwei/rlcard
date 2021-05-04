@@ -17,3 +17,7 @@ experiments/
 newtest/
 dist/
 cfr_model/
+models/tractor_nfsp/checkpoint
+models/tractor_nfsp/model.data-00000-of-00001
+models/tractor_nfsp/model.index
+models/tractor_nfsp/model.meta

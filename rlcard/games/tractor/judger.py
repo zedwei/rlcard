@@ -19,7 +19,7 @@ class TractorJudger(object):
         for player in players:
             player_id = player.player_id
             current_hand = cards2str(player.current_hand)
-            self.playable_cards[player_id] = self.playable_cards_from_hand(current_hand)
+            self.playable_cards[player_id] = self.playable_cards_from_hand(current_hand, self.playable_cards[player_id])
 
     def calc_playable_cards(self, player):
         ''' Recalculate all legal cards the player can play according to his
@@ -34,7 +34,7 @@ class TractorJudger(object):
         player_id = player.player_id
         current_hand = cards2str(player.current_hand)
 
-        self.playable_cards[player_id] = self.playable_cards_from_hand(current_hand)
+        self.playable_cards[player_id] = self.playable_cards_from_hand(current_hand, self.playable_cards[player_id])
         return self.playable_cards[player_id]
 
     def get_playable_cards(self, player):
@@ -52,12 +52,14 @@ class TractorJudger(object):
         return self.playable_cards[player.player_id]
         
     @staticmethod
-    def playable_cards_from_hand(current_hand):
+    def playable_cards_from_hand(current_hand, playable_cards):
         ''' Get playable cards from hand
             current_hand: string joined with ','
         Returns:
             set: set of string of playable cards
         '''
+
+        playable_cards.clear()
 
         # first convert string represnetation to list
         current_hand = current_hand.split(',')

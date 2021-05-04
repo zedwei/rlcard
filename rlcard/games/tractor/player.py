@@ -24,21 +24,20 @@ class TractorPlayer(object):
 
     def get_state(self, public, others_hands, actions):
         state = {}
-        state['deck'] = public['deck']
-        state['banker_cards'] = public['banker_cards']
-        # state['seen_cards'] = public['seen_cards']
-        state['banker_id'] = public['banker_id']
-        state['trace'] = public['trace'].copy()
-        # state['played_cards'] = public['played_cards'].copy()
-        state['self'] = self.player_id
-        state['initial_hand'] = self.initial_hand
+        # state['deck'] = public['deck']
+        # state['banker_cards'] = public['banker_cards']
+        # state['banker_id'] = public['banker_id']
+        # state['trace'] = public['trace'].copy()
+        # state['self'] = self.player_id
+        # state['initial_hand'] = self.initial_hand
         state['current_hand'] = cards2str(self.current_hand)
-        state['others_hand'] = others_hands
-        state['current_round'] = public['current_round'].copy()
-        state['current_player_id'] = public['current_player_id']
-        state['first_player_id'] = public['first_player_id']
-        state['greater_player_id'] = public['greater_player_id']
+        state['others_hand'] = [others_hands[0]]
 
+        state['current_round'] = public['current_round'].copy()
+
+        #state['current_player_id'] = public['current_player_id']
+        #state['first_player_id'] = public['first_player_id']
+        #state['greater_player_id'] = public['greater_player_id']
         state['actions'] = actions
         return state
 
