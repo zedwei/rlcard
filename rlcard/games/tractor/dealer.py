@@ -3,7 +3,7 @@
 '''
 import functools
 
-from rlcard.games.tractor.utils import init_108_deck, tractor_sort_card, cards2str
+from rlcard.games.tractor.utils import tractor_sort_card, CARD_RANK_STR
 
 
 class TractorDealer(object):
@@ -19,8 +19,13 @@ class TractorDealer(object):
         ''' The dealer should have all the cards at the beginning of a game
         '''
         self.np_random = np_random
-        self.deck = init_108_deck()
-        self.deck.sort(key=functools.cmp_to_key(tractor_sort_card))
+        # self.deck = init_108_deck()
+        # self.deck.sort(key=functools.cmp_to_key(tractor_sort_card))
+
+        self.deck = []
+        self.deck.extend(CARD_RANK_STR)
+        self.deck.extend(CARD_RANK_STR)
+
         self.banker = None
 
     def shuffle(self):
@@ -40,7 +45,7 @@ class TractorDealer(object):
             current_hand = self.deck[index * hand_num : (index+1) * hand_num]
             current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
             player.current_hand = current_hand
-            player.initial_hand = cards2str(player.current_hand)
+            player.initial_hand = current_hand
     
     def deal_cards_and_determine_role(self, players):
         ''' Deal cards and determine banker according to players' hand

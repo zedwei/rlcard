@@ -3,7 +3,7 @@ import functools
 
 from rlcard.envs import Env
 from rlcard.games.tractor import Game
-from rlcard.games.tractor.utils import encode_cards, ACTION_LIST, ACTION_SPACE, cards2str
+from rlcard.games.tractor.utils import encode_cards, ACTION_LIST, ACTION_SPACE
 
 
 class TractorEnv(Env):
@@ -42,11 +42,12 @@ class TractorEnv(Env):
         # self._encode_cards(obs[2], state['others_hand'][1])
         # self._encode_cards(obs[3], state['others_hand'][2])
         
-        current_round = [x.split(',') for x in state['current_round'] if x != None]
+        current_round = [x for x in state['current_round'] if x != None]
         if (len(current_round) > 0):
             current_round = functools.reduce(lambda z,y : z + y, current_round)
-            current_round = ','.join(current_round)
             encode_cards(obs[2], current_round)
+
+        # obs.append(np.array(state['score']))
 
         extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions()}
         if self.allow_raw_data:
@@ -69,7 +70,7 @@ class TractorEnv(Env):
 
         Note: Must be implemented in the child class.
         '''
-        return self.game.judger.judge_payoffs(self.game.winner_id)
+        return self.game.judger.judge_payoffs(self.game.winner_id, self.game.round.score)
         
     def _decode_action(self, action_id):
         ''' Decode Action id to the action in the game.
@@ -82,7 +83,7 @@ class TractorEnv(Env):
 
         Note: Must be implemented in the child class.
         '''
-        return ACTION_LIST[action_id]
+        return ACTION_LIST[action_id].split(',')
 
     def _get_legal_actions(self):
         ''' Get all legal actions for current state.
@@ -96,7 +97,8 @@ class TractorEnv(Env):
         legal_actions = self.game.state['actions']
         if legal_actions:
             for action in legal_actions:
-                legal_action_id.append(ACTION_SPACE[action])
+                action_str = ','.join(action)
+                legal_action_id.append(ACTION_SPACE[action_str])
         return legal_action_id
 
     def get_perfect_information(self):
@@ -108,7 +110,7 @@ class TractorEnv(Env):
         Note: Must be implemented in the child class.
         '''
         state = {}
-        state['hand_cards'] = [cards2str(player.current_hand) for player in self.game.players]
+        state['hand_cards'] = [player.current_hand for player in self.game.players]
         state['banker_id'] = self.game.state['banker_id']
         state['trace'] = self.game.state['trace']
         state['current_player'] = self.game.round.current_player

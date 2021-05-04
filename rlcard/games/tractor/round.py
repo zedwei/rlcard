@@ -6,7 +6,7 @@ import numpy as np
 import functools
 
 from rlcard.games.tractor import Dealer
-from rlcard.games.tractor.utils import cards2str, CARD_RANK_STR, CARD_SCORE
+from rlcard.games.tractor.utils import CARD_RANK_STR, CARD_SCORE
 
 class TractorRound(object):
     ''' Round stores the id the ongoing round and can call other Classes' functions to keep the game running
@@ -40,8 +40,8 @@ class TractorRound(object):
         self.first_player = self.current_player
         self.greater_player = self.current_player
 
-        self.public = {'deck': cards2str(self.dealer.deck[0:100]),
-                       'banker_cards': cards2str(self.dealer.deck[100:108]),
+        self.public = {'deck': self.dealer.deck[0:100],
+                       'banker_cards': self.dealer.deck[100:108],
                        'banker_id': self.banker_id, 'trump': self.trump,
                        'score': self.score, 'trace': self.trace, 
                        'current_round': self.current_round,
@@ -89,8 +89,7 @@ class TractorRound(object):
         return next_id, end_of_game
 
     def calc_score_in_round(self):
-        cards = [x.split(',') for x in self.current_round]
-        cards = functools.reduce(lambda z,y : z + y, cards)
+        cards = functools.reduce(lambda z,y : z + y, self.current_round)
         scores = [CARD_SCORE[x] for x in cards if x in CARD_SCORE.keys()]
         score_in_round = sum(scores)
         return score_in_round

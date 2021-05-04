@@ -2,7 +2,7 @@
 ''' Implement Tractor Player class
 '''
 from rlcard.games.tractor import Dealer, Judger
-from rlcard.games.tractor.utils import get_valid_cards, cards2str, compare_card_str, hand2type, is_same_suit
+from rlcard.games.tractor.utils import get_valid_cards, is_same_suit, tractor_sort_card
 
 class TractorPlayer(object):
     ''' Player stores cards in the player's hand, and can determine the actions can be made according to the rules
@@ -30,7 +30,7 @@ class TractorPlayer(object):
         # state['trace'] = public['trace'].copy()
         # state['self'] = self.player_id
         # state['initial_hand'] = self.initial_hand
-        state['current_hand'] = cards2str(self.current_hand)
+        state['current_hand'] = self.current_hand
         state['others_hand'] = [others_hands[0]]
 
         state['current_round'] = public['current_round'].copy()
@@ -68,8 +68,8 @@ class TractorPlayer(object):
         '''
         removed_cards = []
         #if (action == 'pass' or action == 'pass_score'):
-        if (action == 'pass'):
-            target_hand = first_player.played_cards.split(',')
+        if (action[0] == 'pass'):
+            target_hand = first_player.played_cards
             if len(target_hand) == 1:
                 # Single
                 # Current player MUST NOT have any card with the same suit according to how actions are picked
@@ -88,12 +88,12 @@ class TractorPlayer(object):
                 cards_to_remove = 2
                 for target_card in target_hand:
                     for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_card, str(remain_card), trump):
+                        if is_same_suit(target_card, remain_card, trump):
                             removed_cards.append(self.current_hand[_])
                             self.current_hand.remove(self.current_hand[_])
                             cards_to_remove -= 1
                             break
-                for i in range(cards_to_remove):
+                for _ in range(cards_to_remove):
                     removed_cards.append(self.current_hand[0])
                     self.current_hand.remove(self.current_hand[0])
 
@@ -110,28 +110,27 @@ class TractorPlayer(object):
                 for cards in playable_cards:
                     if cards_to_remove == 0:
                         break
-                    if len(cards) // 3 == 1:  # a pair
-                        pair_cards = cards.split(',')
-                        if is_same_suit(target_hand[0], pair_cards[0], trump): # same suit
-                            for cardstr in pair_cards:
+                    if len(cards) == 2:  # a pair
+                        if is_same_suit(target_hand[0], cards[0], trump): # same suit
+                            for cardstr in cards:
                                 for _, remain_card in enumerate(self.current_hand):
-                                    if cardstr == str(remain_card):
+                                    if cardstr == remain_card:
                                         removed_cards.append(self.current_hand[_])
                                         self.current_hand.remove(self.current_hand[_])
                                         cards_to_remove -= 1
                                         break
 
                 # try to remove single with the same suit
-                for i in range(cards_to_remove):
+                for _ in range(cards_to_remove):
                     for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_hand[0], str(remain_card), trump):
+                        if is_same_suit(target_hand[0], remain_card, trump):
                             removed_cards.append(self.current_hand[_])
                             self.current_hand.remove(self.current_hand[_])
                             cards_to_remove -= 1
                             break
 
                 # pick the global smallest
-                for i in range(cards_to_remove):
+                for _ in range(cards_to_remove):
                     removed_cards.append(self.current_hand[0])
                     self.current_hand.remove(self.current_hand[0])
 
@@ -139,22 +138,21 @@ class TractorPlayer(object):
                 raise NotImplementedError
 
             self._recorded_played_cards.append(removed_cards)
-            self.played_cards = cards2str(removed_cards)
+            self.played_cards = removed_cards
             return (greater_player, self.played_cards)
         else:
             # action matches greater_player card type
-            action = action.split(',')
             for play_card in action:
                 for _, remain_card in enumerate(self.current_hand):
-                    if play_card == str(remain_card):
+                    if play_card == remain_card:
                         removed_cards.append(self.current_hand[_])
                         self.current_hand.remove(self.current_hand[_])
                         break
             self._recorded_played_cards.append(removed_cards)
-            self.played_cards = cards2str(removed_cards)
+            self.played_cards = removed_cards
 
-            greater_player_cards = greater_player.played_cards.split(',')
-            if (greater_player == None or compare_card_str(action[0], greater_player_cards[0])) > 0:
+            greater_player_cards = greater_player.played_cards
+            if (greater_player == None or tractor_sort_card(action[0], greater_player_cards[0])) > 0:
                 return (self, self.played_cards)
             else:
                 return (greater_player, self.played_cards)

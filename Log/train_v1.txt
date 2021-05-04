@@ -1,0 +1,828 @@
+TensorFlow 1.x selected.
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/utils/utils.py:335: The name tf.set_random_seed is deprecated. Please use tf.compat.v1.set_random_seed instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/nfsp_agent.py:114: The name tf.variable_scope is deprecated. Please use tf.compat.v1.variable_scope instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:256: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:267: batch_normalization (from tensorflow.python.layers.normalization) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.BatchNormalization instead.  In particular, `tf.control_dependencies(tf.GraphKeys.UPDATE_OPS)` should not be used (consult the `tf.keras.layers.batch_normalization` documentation).
+WARNING:tensorflow:From /tensorflow-1.15.2/python3.7/tensorflow_core/python/layers/normalization.py:327: Layer.apply (from tensorflow.python.keras.engine.base_layer) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `layer.__call__` method instead.
+WARNING:tensorflow:
+The TensorFlow contrib module will not be included in TensorFlow 2.0.
+For more information, please see:
+  * https://github.com/tensorflow/community/blob/master/rfcs/20180907-contrib-sunset.md
+  * https://github.com/tensorflow/addons
+  * https://github.com/tensorflow/io (for I/O related ops)
+If you depend on functionality not listed there, please file an issue.
+
+WARNING:tensorflow:From /tensorflow-1.15.2/python3.7/tensorflow_core/contrib/layers/python/layers/layers.py:1634: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:280: The name tf.squared_difference is deprecated. Please use tf.math.squared_difference instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:242: The name tf.get_collection is deprecated. Please use tf.compat.v1.get_collection instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:242: The name tf.GraphKeys is deprecated. Please use tf.compat.v1.GraphKeys instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:242: The name tf.get_variable_scope is deprecated. Please use tf.compat.v1.get_variable_scope instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:244: The name tf.train.AdamOptimizer is deprecated. Please use tf.compat.v1.train.AdamOptimizer instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:247: get_global_step (from tensorflow.contrib.framework.python.ops.variables) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please switch to tf.train.get_global_step
+
+----------------------------------------
+  timestep     |  96
+  reward       |  0.519
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1000, rl-loss: 0.29685917496681213WARNING:tensorflow:From /usr/local/lib/python3.7/dist-packages/rlcard/agents/dqn_agent.py:364: The name tf.trainable_variables is deprecated. Please use tf.compat.v1.trainable_variables instead.
+
+
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1000, rl-loss: 0.2596672773361206
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1000, rl-loss: 0.3531669080257416
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1000, rl-loss: 0.27432671189308167
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 23144, rl-loss: 0.06121343746781349
+----------------------------------------
+  timestep     |  92580
+  reward       |  0.522
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 46184, rl-loss: 0.03827051445841789
+----------------------------------------
+  timestep     |  184808
+  reward       |  0.533
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 65000, rl-loss: 0.05084078013896942
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 65000, rl-loss: 0.03953760862350464
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 65000, rl-loss: 0.06478098779916763
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 65000, rl-loss: 0.06727289408445358
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 69224, rl-loss: 0.06941322982311249
+----------------------------------------
+  timestep     |  276972
+  reward       |  0.546
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 92200, rl-loss: 0.03287450969219208
+----------------------------------------
+  timestep     |  368884
+  reward       |  0.517
+----------------------------------------
+INFO - Agent nfsp3, step 115136, sl-loss: 1.1747698783874512
+----------------------------------------
+  timestep     |  460676
+  reward       |  0.5
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 129000, rl-loss: 0.0877658873796463
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 129000, rl-loss: 0.031681742519140244
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 129000, rl-loss: 0.05106739699840546
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 129000, rl-loss: 0.0346970371901989
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 138048, sl-loss: 1.084478497505188
+----------------------------------------
+  timestep     |  552192
+  reward       |  0.52
+----------------------------------------
+INFO - Agent nfsp3, step 160896, sl-loss: 1.436579942703247
+----------------------------------------
+  timestep     |  643596
+  reward       |  0.533
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 183720, rl-loss: 0.05353565886616707
+----------------------------------------
+  timestep     |  734920
+  reward       |  0.561
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 193000, rl-loss: 0.06669589877128601
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 193000, rl-loss: 0.021483490243554115
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 193000, rl-loss: 0.05979525297880173
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 193000, rl-loss: 0.053111810237169266
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 206592, sl-loss: 1.9174038171768188
+----------------------------------------
+  timestep     |  826500
+  reward       |  0.54
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 229352, rl-loss: 0.049248941242694855
+----------------------------------------
+  timestep     |  917428
+  reward       |  0.524
+----------------------------------------
+INFO - Agent nfsp3, step 252160, sl-loss: 1.9692362546920776
+----------------------------------------
+  timestep     |  1008708
+  reward       |  0.509
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 257000, rl-loss: 0.048027753829956055
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 257000, rl-loss: 0.01932317018508911
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 257000, rl-loss: 0.02022104151546955
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 257000, rl-loss: 0.07276783138513565
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 274880, sl-loss: 1.911185383796692
+----------------------------------------
+  timestep     |  1099568
+  reward       |  0.528
+----------------------------------------
+INFO - Agent nfsp3, step 297536, sl-loss: 2.048328161239624
+----------------------------------------
+  timestep     |  1190300
+  reward       |  0.499
+----------------------------------------
+INFO - Agent nfsp3, step 320256, sl-loss: 2.1152396202087402
+----------------------------------------
+  timestep     |  1281048
+  reward       |  0.521
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 321000, rl-loss: 0.04852570965886116
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 321000, rl-loss: 0.02662344090640545
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 321000, rl-loss: 0.01898052915930748
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 321000, rl-loss: 0.06148523837327957
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 342848, sl-loss: 2.03432559967041
+----------------------------------------
+  timestep     |  1371536
+  reward       |  0.555
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 365608, rl-loss: 0.07783544063568115
+----------------------------------------
+  timestep     |  1462496
+  reward       |  0.533
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 385000, rl-loss: 0.05871271342039108
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 385000, rl-loss: 0.02501969411969185
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 385000, rl-loss: 0.0940583273768425
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 385000, rl-loss: 0.06382346898317337
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 388328, rl-loss: 0.048057738691568375
+----------------------------------------
+  timestep     |  1553324
+  reward       |  0.516
+----------------------------------------
+INFO - Agent nfsp3, step 410944, sl-loss: 1.8506659269332886
+----------------------------------------
+  timestep     |  1643920
+  reward       |  0.526
+----------------------------------------
+INFO - Agent nfsp3, step 433664, sl-loss: 1.994254231452942
+----------------------------------------
+  timestep     |  1734696
+  reward       |  0.519
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 449000, rl-loss: 0.05787571892142296
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 449000, rl-loss: 0.019108157604932785
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 449000, rl-loss: 0.05383818596601486
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 449000, rl-loss: 0.09299949556589127
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 456320, sl-loss: 2.1381425857543945
+----------------------------------------
+  timestep     |  1825388
+  reward       |  0.517
+----------------------------------------
+INFO - Agent nfsp3, step 478912, sl-loss: 1.9676792621612549
+----------------------------------------
+  timestep     |  1915672
+  reward       |  0.52
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 501672, rl-loss: 0.050330083817243576
+----------------------------------------
+  timestep     |  2006736
+  reward       |  0.523
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 513000, rl-loss: 0.051288872957229614
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 513000, rl-loss: 0.01935480162501335
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 513000, rl-loss: 0.09967322647571564
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 513000, rl-loss: 0.09792549908161163
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 524392, rl-loss: 0.1428900510072708
+----------------------------------------
+  timestep     |  2097656
+  reward       |  0.502
+----------------------------------------
+INFO - Agent nfsp3, step 547072, sl-loss: 1.9081634283065796
+----------------------------------------
+  timestep     |  2188348
+  reward       |  0.515
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 569704, rl-loss: 0.057191189378499985
+----------------------------------------
+  timestep     |  2278900
+  reward       |  0.518
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 577000, rl-loss: 0.056851983070373535
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 577000, rl-loss: 0.015692653134465218
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 577000, rl-loss: 0.0699760913848877
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 577000, rl-loss: 0.04694320261478424
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 592320, sl-loss: 2.0277411937713623
+----------------------------------------
+  timestep     |  2369368
+  reward       |  0.541
+----------------------------------------
+INFO - Agent nfsp3, step 614912, sl-loss: 1.6168615818023682
+----------------------------------------
+  timestep     |  2459720
+  reward       |  0.551
+----------------------------------------
+INFO - Agent nfsp3, step 637568, sl-loss: 1.6810824871063232
+----------------------------------------
+  timestep     |  2550332
+  reward       |  0.538
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 641000, rl-loss: 0.06302930414676666
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 641000, rl-loss: 0.012469389475882053
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 641000, rl-loss: 0.12782539427280426
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 641000, rl-loss: 0.028460849076509476
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 660136, rl-loss: 0.017718220129609108
+----------------------------------------
+  timestep     |  2640632
+  reward       |  0.553
+----------------------------------------
+INFO - Agent nfsp3, step 682688, sl-loss: 1.459526777267456
+----------------------------------------
+  timestep     |  2730876
+  reward       |  0.521
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 705000, rl-loss: 0.1942163109779358
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 705000, rl-loss: 0.01271573081612587
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 705000, rl-loss: 0.08602110296487808
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 705000, rl-loss: 0.014371244236826897
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 705280, sl-loss: 1.4279258251190186
+----------------------------------------
+  timestep     |  2821268
+  reward       |  0.514
+----------------------------------------
+INFO - Agent nfsp3, step 727808, sl-loss: 1.214133858680725
+----------------------------------------
+  timestep     |  2911308
+  reward       |  0.55
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 750312, rl-loss: 0.02629110775887966
+----------------------------------------
+  timestep     |  3001340
+  reward       |  0.562
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 769000, rl-loss: 0.05069350823760033
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 769000, rl-loss: 0.011441697366535664
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 769000, rl-loss: 0.08439687639474869
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 769000, rl-loss: 0.02393823117017746
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 772776, rl-loss: 0.0170025285333395
+----------------------------------------
+  timestep     |  3091148
+  reward       |  0.525
+----------------------------------------
+INFO - Agent nfsp3, step 795264, sl-loss: 0.9922046661376953
+----------------------------------------
+  timestep     |  3181132
+  reward       |  0.548
+----------------------------------------
+INFO - Agent nfsp3, step 817792, sl-loss: 0.9220342636108398
+----------------------------------------
+  timestep     |  3271280
+  reward       |  0.545
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 833000, rl-loss: 0.06915923207998276
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 833000, rl-loss: 0.017474321648478508
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 833000, rl-loss: 0.0610785111784935
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 833000, rl-loss: 0.02063268981873989
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 840320, sl-loss: 0.7459887266159058
+----------------------------------------
+  timestep     |  3361364
+  reward       |  0.524
+----------------------------------------
+INFO - Agent nfsp3, step 862784, sl-loss: 0.7036073207855225
+----------------------------------------
+  timestep     |  3451200
+  reward       |  0.512
+----------------------------------------
+INFO - Agent nfsp3, step 885312, sl-loss: 0.798498272895813
+----------------------------------------
+  timestep     |  3541272
+  reward       |  0.558
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 897000, rl-loss: 0.24319763481616974
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 897000, rl-loss: 0.0257819015532732
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 897000, rl-loss: 0.07418543100357056
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 897000, rl-loss: 0.02206369675695896
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 907776, sl-loss: 0.6034002304077148
+----------------------------------------
+  timestep     |  3631188
+  reward       |  0.543
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 930216, rl-loss: 0.016885165125131607
+----------------------------------------
+  timestep     |  3720920
+  reward       |  0.562
+----------------------------------------
+INFO - Agent nfsp3, step 952704, sl-loss: 0.5153661966323853
+----------------------------------------
+  timestep     |  3810940
+  reward       |  0.516
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 961000, rl-loss: 0.07323065400123596
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 961000, rl-loss: 0.015408753417432308
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 961000, rl-loss: 0.021718807518482208
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 961000, rl-loss: 0.017313186079263687
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 975104, sl-loss: 0.4551243484020233
+----------------------------------------
+  timestep     |  3900432
+  reward       |  0.505
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 997544, rl-loss: 0.02451465278863907
+----------------------------------------
+  timestep     |  3990180
+  reward       |  0.553
+----------------------------------------
+INFO - Agent nfsp3, step 1019968, sl-loss: 0.30261582136154175
+----------------------------------------
+  timestep     |  4079904
+  reward       |  0.525
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1025000, rl-loss: 0.058755356818437576
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1025000, rl-loss: 0.020711515098810196
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1025000, rl-loss: 0.02024300955235958
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1025000, rl-loss: 0.028697216883301735
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1042304, sl-loss: 0.2703858017921448
+----------------------------------------
+  timestep     |  4169300
+  reward       |  0.533
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1064744, rl-loss: 0.01664809137582779
+----------------------------------------
+  timestep     |  4259064
+  reward       |  0.494
+----------------------------------------
+INFO - Agent nfsp3, step 1087168, sl-loss: 0.22748813033103943
+----------------------------------------
+  timestep     |  4348696
+  reward       |  0.493
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1089000, rl-loss: 0.023500492796301842
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1089000, rl-loss: 0.014734763652086258
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1089000, rl-loss: 0.022989772260189056
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1089000, rl-loss: 0.014983993023633957
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1109504, sl-loss: 0.2552858889102936
+----------------------------------------
+  timestep     |  4438160
+  reward       |  0.512
+----------------------------------------
+INFO - Agent nfsp3, step 1131904, sl-loss: 0.19596192240715027
+----------------------------------------
+  timestep     |  4527772
+  reward       |  0.505
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1153000, rl-loss: 0.08027666807174683
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1153000, rl-loss: 0.023443343117833138
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1153000, rl-loss: 0.02750338613986969
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1153000, rl-loss: 0.02386033535003662
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1154368, sl-loss: 0.11910377442836761
+----------------------------------------
+  timestep     |  4617596
+  reward       |  0.48
+----------------------------------------
+INFO - Agent nfsp3, step 1176832, sl-loss: 0.13134562969207764
+----------------------------------------
+  timestep     |  4707364
+  reward       |  0.469
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1199272, rl-loss: 0.012109185568988323
+----------------------------------------
+  timestep     |  4797136
+  reward       |  0.477
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1217000, rl-loss: 0.088234081864357
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1217000, rl-loss: 0.024591268971562386
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1217000, rl-loss: 0.022647114470601082
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1217000, rl-loss: 0.027111578732728958
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1221632, sl-loss: 0.08937032520771027
+----------------------------------------
+  timestep     |  4886592
+  reward       |  0.509
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1244136, rl-loss: 0.02512362040579319
+----------------------------------------
+  timestep     |  4976592
+  reward       |  0.501
+----------------------------------------
+INFO - Agent nfsp3, step 1266560, sl-loss: 0.07601792365312576
+----------------------------------------
+  timestep     |  5066244
+  reward       |  0.456
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1281000, rl-loss: 0.14518091082572937
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1281000, rl-loss: 0.017697196453809738
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1281000, rl-loss: 0.021518684923648834
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1281000, rl-loss: 0.01891183853149414
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1289000, rl-loss: 0.01915193907916546
+----------------------------------------
+  timestep     |  5156020
+  reward       |  0.477
+----------------------------------------
+INFO - Agent nfsp3, step 1311424, sl-loss: 0.05192128196358681
+----------------------------------------
+  timestep     |  5245780
+  reward       |  0.493
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1333800, rl-loss: 0.025525636970996857
+----------------------------------------
+  timestep     |  5335240
+  reward       |  0.486
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1345000, rl-loss: 0.19901353120803833
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1345000, rl-loss: 0.017931224778294563
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1345000, rl-loss: 0.021077916026115417
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1345000, rl-loss: 0.022419271990656853
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1356288, sl-loss: 0.029847582802176476
+----------------------------------------
+  timestep     |  5425200
+  reward       |  0.519
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1378728, rl-loss: 0.026810303330421448
+----------------------------------------
+  timestep     |  5515004
+  reward       |  0.497
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1401192, rl-loss: 0.017310846596956253
+----------------------------------------
+  timestep     |  5604844
+  reward       |  0.476
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1409000, rl-loss: 0.08015874028205872
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1409000, rl-loss: 0.017073076218366623
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1409000, rl-loss: 0.025518277660012245
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1409000, rl-loss: 0.020571298897266388
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1423552, sl-loss: 0.026148371398448944
+----------------------------------------
+  timestep     |  5694208
+  reward       |  0.488
+----------------------------------------
+INFO - Agent nfsp3, step 1445952, sl-loss: 0.020861804485321045
+----------------------------------------
+  timestep     |  5783960
+  reward       |  0.476
+----------------------------------------
+INFO - Agent nfsp3, step 1468480, sl-loss: 0.016621438786387444
+----------------------------------------
+  timestep     |  5874028
+  reward       |  0.507
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1473000, rl-loss: 0.08927386999130249
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1473000, rl-loss: 0.0216995757073164
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1473000, rl-loss: 0.022350456565618515
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1473000, rl-loss: 0.02034572884440422
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1490920, rl-loss: 0.01958787813782692
+----------------------------------------
+  timestep     |  5963740
+  reward       |  0.47
+----------------------------------------
+INFO - Agent nfsp3, step 1513408, sl-loss: 0.01761229895055294
+----------------------------------------
+  timestep     |  6053656
+  reward       |  0.511
+----------------------------------------
+INFO - Agent nfsp3, step 1535808, sl-loss: 0.015562550164759159
+----------------------------------------
+  timestep     |  6143280
+  reward       |  0.477
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1537000, rl-loss: 0.047588251531124115
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1537000, rl-loss: 0.02104426547884941
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1537000, rl-loss: 0.019473977386951447
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1537000, rl-loss: 0.017921509221196175
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1558144, sl-loss: 0.018492886796593666
+----------------------------------------
+  timestep     |  6232692
+  reward       |  0.476
+----------------------------------------
+INFO - Agent nfsp3, step 1580672, sl-loss: 0.010005484335124493
+----------------------------------------
+  timestep     |  6322744
+  reward       |  0.475
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1601000, rl-loss: 0.07973789423704147
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1601000, rl-loss: 0.015176557004451752
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1601000, rl-loss: 0.019619882106781006
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1601000, rl-loss: 0.019407153129577637
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1603048, rl-loss: 0.018444428220391273
+----------------------------------------
+  timestep     |  6412216
+  reward       |  0.486
+----------------------------------------
+INFO - Agent nfsp3, step 1625408, sl-loss: 0.04998119920492172
+----------------------------------------
+  timestep     |  6501780
+  reward       |  0.515
+----------------------------------------
+INFO - Agent nfsp3, step 1647936, sl-loss: 0.009011544287204742
+----------------------------------------
+  timestep     |  6591756
+  reward       |  0.495
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1665000, rl-loss: 0.5134100914001465
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1665000, rl-loss: 0.017470553517341614
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1665000, rl-loss: 0.02033356763422489
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1665000, rl-loss: 0.016465676948428154
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1670376, rl-loss: 0.016177909448742867
+----------------------------------------
+  timestep     |  6681552
+  reward       |  0.503
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1692840, rl-loss: 0.013772516511380672
+----------------------------------------
+  timestep     |  6771372
+  reward       |  0.501
+----------------------------------------
+INFO - Agent nfsp3, step 1715328, sl-loss: 0.006788934115320444
+----------------------------------------
+  timestep     |  6861400
+  reward       |  0.505
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1729000, rl-loss: 0.07785535603761673
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1729000, rl-loss: 0.015170619823038578
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1729000, rl-loss: 0.018510006368160248
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1729000, rl-loss: 0.015947556123137474
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1737792, sl-loss: 0.007770961616188288
+----------------------------------------
+  timestep     |  6951272
+  reward       |  0.511
+----------------------------------------
+INFO - Agent nfsp3, step 1760256, sl-loss: 0.006204070523381233
+----------------------------------------
+  timestep     |  7041128
+  reward       |  0.498
+----------------------------------------
+INFO - Agent nfsp3, step 1782720, sl-loss: 0.003124253125861287
+----------------------------------------
+  timestep     |  7130968
+  reward       |  0.481
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1793000, rl-loss: 0.07711510360240936
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1793000, rl-loss: 0.01696907915174961
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1793000, rl-loss: 0.0177210234105587
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1793000, rl-loss: 0.020386775955557823
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1805184, sl-loss: 0.005523523315787315
+----------------------------------------
+  timestep     |  7220828
+  reward       |  0.522
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1827624, rl-loss: 0.02246246114373207
+----------------------------------------
+  timestep     |  7310496
+  reward       |  0.498
+----------------------------------------
+INFO - Agent nfsp3, step 1849984, sl-loss: 0.003967837430536747
+----------------------------------------
+  timestep     |  7400008
+  reward       |  0.512
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1857000, rl-loss: 0.09320025146007538
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1857000, rl-loss: 0.014580442570149899
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1857000, rl-loss: 0.027268311008810997
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1857000, rl-loss: 0.020632172003388405
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1872384, sl-loss: 0.0035878336057066917
+----------------------------------------
+  timestep     |  7489692
+  reward       |  0.506
+----------------------------------------
+INFO - Agent nfsp3, step 1894912, sl-loss: 0.0031535045709460974
+----------------------------------------
+  timestep     |  7579680
+  reward       |  0.511
+----------------------------------------
+INFO - Agent nfsp3, step 1917312, sl-loss: 0.003279817057773471
+----------------------------------------
+  timestep     |  7669348
+  reward       |  0.501
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1921000, rl-loss: 0.06204695627093315
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1921000, rl-loss: 0.01370287500321865
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1921000, rl-loss: 0.018865855410695076
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1921000, rl-loss: 0.02160636894404888
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 1939840, sl-loss: 0.003501875326037407
+----------------------------------------
+  timestep     |  7759380
+  reward       |  0.484
+----------------------------------------
+INFO - Agent nfsp3, step 1962304, sl-loss: 0.02244776487350464
+----------------------------------------
+  timestep     |  7849232
+  reward       |  0.473
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 1984744, rl-loss: 0.01611194759607315
+----------------------------------------
+  timestep     |  7939044
+  reward       |  0.515
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 1985000, rl-loss: 0.7227782011032104
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 1985000, rl-loss: 0.022306572645902634
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 1985000, rl-loss: 0.01812819391489029
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 1985000, rl-loss: 0.031157145276665688
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 2007168, sl-loss: 0.0036395080387592316
+----------------------------------------
+  timestep     |  8028708
+  reward       |  0.495
+----------------------------------------
+INFO - Agent nfsp3, step 2029568, sl-loss: 0.0025690889451652765
+----------------------------------------
+  timestep     |  8118336
+  reward       |  0.508
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 2049000, rl-loss: 0.07024529576301575
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 2049000, rl-loss: 0.017595872282981873
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 2049000, rl-loss: 0.02592642977833748
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 2049000, rl-loss: 0.013817423023283482
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 2051968, sl-loss: 0.0014206896303221583
+----------------------------------------
+  timestep     |  8207896
+  reward       |  0.506
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 2074472, rl-loss: 0.020354272797703743
+----------------------------------------
+  timestep     |  8297960
+  reward       |  0.509
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 2096936, rl-loss: 0.023175256326794624
+----------------------------------------
+  timestep     |  8387772
+  reward       |  0.522
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 2113000, rl-loss: 0.06700310111045837
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 2113000, rl-loss: 0.0165608711540699
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 2113000, rl-loss: 0.01844562217593193
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 2113000, rl-loss: 0.01756206713616848
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 2119296, sl-loss: 0.001288161613047123
+----------------------------------------
+  timestep     |  8477256
+  reward       |  0.503
+----------------------------------------
+INFO - Agent nfsp3, step 2141760, sl-loss: 0.004775460343807936
+----------------------------------------
+  timestep     |  8567096
+  reward       |  0.475
+----------------------------------------
+INFO - Agent nfsp3, step 2164160, sl-loss: 0.0015504055190831423
+----------------------------------------
+  timestep     |  8656676
+  reward       |  0.498
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 2177000, rl-loss: 0.0874786451458931
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 2177000, rl-loss: 0.018205374479293823
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 2177000, rl-loss: 0.022103700786828995
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 2177000, rl-loss: 0.02372555062174797
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 2186560, sl-loss: 0.0010050913551822305
+----------------------------------------
+  timestep     |  8746344
+  reward       |  0.498
+----------------------------------------
+INFO - Agent nfsp3_dqn, step 2209000, rl-loss: 0.0182027630507946
+----------------------------------------
+  timestep     |  8836028
+  reward       |  0.517
+----------------------------------------
+INFO - Agent nfsp3, step 2231488, sl-loss: 0.005360012874007225
+----------------------------------------
+  timestep     |  8925972
+  reward       |  0.507
+----------------------------------------
+INFO - Agent nfsp0_dqn, step 2241000, rl-loss: 0.06042455509305
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp1_dqn, step 2241000, rl-loss: 0.016664700582623482
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp2_dqn, step 2241000, rl-loss: 0.018584690988063812
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3_dqn, step 2241000, rl-loss: 0.013868844136595726
+INFO - Copied model parameters to target network.
+INFO - Agent nfsp3, step 2253952, sl-loss: 0.0009313753107562661./experiments/tractor_nfsp_result/performance.csv

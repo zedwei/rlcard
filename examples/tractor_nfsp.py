@@ -3,7 +3,8 @@
 
 import tensorflow as tf
 import os
-import gc
+
+from tqdm import tqdm
 
 import rlcard
 from rlcard.agents import NFSPAgent
@@ -67,7 +68,7 @@ with tf.Session(config=config) as sess:
                            q_mlp_layers=[512,1024,2048,1024,512],
                         #   q_mlp_layers=[512,1024,512],
                         #   q_mlp_layers=[64],
-                          reservoir_buffer_capacity=int(1e3))
+                          reservoir_buffer_capacity=int(1e4))
         agents.append(agent)
     random_agent = RandomAgent(action_num=eval_env.action_num)
 
@@ -81,7 +82,7 @@ with tf.Session(config=config) as sess:
 
     logger = Logger(log_dir)
 
-    for episode in range(episode_num):
+    for episode in tqdm(range(episode_num)):
         # First sample a policy for the episode
         for agent in agents:
             agent.sample_episode_policy()
@@ -97,8 +98,6 @@ with tf.Session(config=config) as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
             logger.log_performance(env.timestep, tournament(eval_env, evaluate_num)[0])
-
-        gc.collect()
 
     # Close files in the logger
     logger.close_files()

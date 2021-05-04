@@ -7,7 +7,7 @@ import functools
 from heapq import merge
 
 from rlcard.games.tractor import Player, Round, Judger
-from rlcard.games.tractor.utils import cards2str, tractor_sort_card, CARD_SCORE, ACTION_SPACE
+from rlcard.games.tractor.utils import tractor_sort_card, CARD_SCORE, ACTION_SPACE
 
 class TractorGame(object):
     ''' Game class. This class will interact with outer environment.
@@ -43,7 +43,7 @@ class TractorGame(object):
         player_id = self.round.current_player.player_id
         player = self.players[player_id]
         others_hands = self._get_others_current_hand(player)
-        actions = list(self.judger.playable_cards[player_id])
+        actions = self.judger.playable_cards[player_id]
         state = player.get_state(self.round.public, others_hands, actions)
         self.state = state
 
@@ -60,12 +60,12 @@ class TractorGame(object):
             self.winner_id = []
 
             # TODO: hack to compute total score ignoring banker cards temporarily
-            available_cards = cards2str(self.round.dealer.deck[0:100]).split(',')
+            available_cards = self.round.dealer.deck[0:100]
             total_score = sum([CARD_SCORE[x] for x in available_cards if x in CARD_SCORE.keys()])
 
-            if self.round.score[0] >= total_score // 2:
+            if self.round.score[0] > total_score // 2:
                 self.winner_id.extend([0, 2])
-            if self.round.score[1] >= total_score // 2:
+            if self.round.score[1] > total_score // 2:
                 self.winner_id.extend([1, 3])
 
         # get next state
@@ -81,7 +81,7 @@ class TractorGame(object):
         if self.is_over():
             actions = None
         else:
-            actions = list(player.available_actions(self.round.first_player, self.judger, self.round))
+            actions = player.available_actions(self.round.first_player, self.judger, self.round)
         state = player.get_state(self.round.public, others_hands, actions)
 
         return state
@@ -118,17 +118,17 @@ class TractorGame(object):
         player_front = self.players[(player.player_id + 2) % len(self.players)]
         player_up = self.players[(player.player_id - 1) % len(self.players)]
 
-        others_hand = merge(player_up.current_hand, 
-                            player_front.current_hand,
-                            player_down.current_hand, 
-                            self.round.dealer.deck[100:108],
-                            key=functools.cmp_to_key(tractor_sort_card))
-
-        others_hand_str = cards2str(others_hand)
+        others_hand = []
+        others_hand.extend(player_up.current_hand)
+        others_hand.extend(player_front.current_hand)
+        others_hand.extend(player_down.current_hand)
+        others_hand.extend(self.round.dealer.deck[100:108])
+        
+        # others_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
 
         # TODO: update logic to more restrictive card guess
-        player_down_hand = others_hand_str
-        player_front_hand = others_hand_str
-        player_up_hand = others_hand_str
+        player_down_hand = others_hand
+        player_front_hand = others_hand
+        player_up_hand = others_hand
 
         return [player_down_hand, player_front_hand, player_up_hand]
