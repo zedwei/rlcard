@@ -25,6 +25,7 @@ SOFTWARE.
 '''
 
 import random
+import tqdm
 import numpy as np
 import tensorflow as tf
 from collections import namedtuple
@@ -183,8 +184,7 @@ class DQNAgent(object):
         # Perform gradient descent update
         state_batch = np.array(state_batch)
         loss = self.q_estimator.update(self.sess, state_batch, action_batch, target_batch)
-        print('\rINFO - Agent {}, step {}, rl-loss: {}'.format(self.scope, self.total_t, loss), end='')
-
+        # print('\rINFO - Agent {}, step {}, rl-loss: {}'.format(self.scope, self.total_t, loss), end='')
 
         # Update the target estimator
         if self.train_t % self.update_target_estimator_every == 0:

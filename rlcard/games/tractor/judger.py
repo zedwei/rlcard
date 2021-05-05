@@ -120,7 +120,8 @@ class TractorJudger(object):
     @staticmethod
     def judge_payoffs(winner_id, scores):
         payoffs = np.array([0, 0, 0, 0])
-        for player_id in winner_id:
+        # for player_id in winner_id:
             # payoffs[player_id] = 1
+        for player_id in range(4):
             payoffs[player_id] = scores[player_id % 2]
         return payoffs
