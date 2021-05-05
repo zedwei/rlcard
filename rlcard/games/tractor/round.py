@@ -25,6 +25,7 @@ class TractorRound(object):
         # self.deck_str = cards2str(self.dealer.deck)
         self.trump = '2S' # either '2S' or 'BJ' for simplicity
         self.score = [0, 0]
+        self.score_trace = []
         self.current_round = [None, None, None, None]
         self.played_player_in_round = 0
 
@@ -42,8 +43,11 @@ class TractorRound(object):
 
         self.public = {'deck': self.dealer.deck[0:100],
                        'banker_cards': self.dealer.deck[100:108],
-                       'banker_id': self.banker_id, 'trump': self.trump,
-                       'score': self.score, 'trace': self.trace, 
+                       'banker_id': self.banker_id, 
+                       'trump': self.trump,
+                       'score': self.score, 
+                       'score_trace' : self.score_trace,
+                       'trace': self.trace, 
                        'current_round': self.current_round,
                        'current_player_id': self.current_player.player_id,
                        'first_player_id': self.first_player.player_id,
@@ -69,11 +73,19 @@ class TractorRound(object):
 
         end_of_game = False
         if self.played_player_in_round < 4:
+            # current round isn't ended
             next_id = (player.player_id + 1) % 4
         else:
+            # current round ends
             # calculate score in current round
             score = self.calc_score_in_round()
             self.score[self.greater_player.player_id % 2] += score
+
+            # add delta score to score_trace
+            score_trace_element = [0, 0]
+            score_trace_element[self.greater_player.player_id % 2] += score
+            score_trace_element[(self.greater_player.player_id + 1) % 2] -= score
+            self.score_trace.append(score_trace_element)            
 
             # reset round status with next player
             next_id = self.greater_player.player_id
@@ -85,7 +97,7 @@ class TractorRound(object):
         self.public['current_player_id'] = next_id
         self.public['first_player_id'] = self.first_player.player_id
         self.public['greater_player_id'] = self.greater_player.player_id
-
+        
         return next_id, end_of_game
 
     def calc_score_in_round(self):
