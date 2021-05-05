@@ -21,3 +21,7 @@ models/tractor_nfsp/checkpoint
 models/tractor_nfsp/model.data-00000-of-00001
 models/tractor_nfsp/model.index
 models/tractor_nfsp/model.meta
+rlcard/models/tractor/20210504/checkpoint
+rlcard/models/tractor/20210504/model.data-00000-of-00001
+rlcard/models/tractor/20210504/model.index
+rlcard/models/tractor/20210504/model.meta

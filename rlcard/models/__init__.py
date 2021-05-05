@@ -50,3 +50,8 @@ register(
 register(
     model_id='gin-rummy-novice-rule',
     entry_point='rlcard.models.gin_rummy_rule_models:GinRummyNoviceRuleModel')
+
+register(
+    model_id='tractor_nfsp_v1',
+    entry_point='rlcard.models.tractor_pretrained_models:TractorNFSPModel'
+)
