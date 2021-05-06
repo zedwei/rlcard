@@ -25,3 +25,11 @@ rlcard/models/tractor/20210504/checkpoint
 rlcard/models/tractor/20210504/model.data-00000-of-00001
 rlcard/models/tractor/20210504/model.index
 rlcard/models/tractor/20210504/model.meta
+*.data-00000-of-00001
+*.index
+*.meta
+models/tractor_nfsp_1_nfsp_3_random/checkpoint
+models/tractor_nfsp_1_nfsp_3_random/result.txt
+rlcard/models/tractor/2021_05_06_08_27_44/tractor_nfsp/checkpoint
+rlcard/models/tractor/tractor_nfsp_1_nfsp_3_random/checkpoint
+rlcard/models/tractor/tractor_nfsp_1_nfsp_3_random/result.txt

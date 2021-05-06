@@ -119,8 +119,11 @@ class DQNAgent(object):
         self.feed_memory(state['obs'], action, reward, next_state['obs'], done)
         self.total_t += 1
         tmp = self.total_t - self.replay_memory_init_size
+
+        loss = None
         if tmp>=0 and tmp%self.train_every == 0:
-            self.train()
+            loss = self.train()
+        return loss
 
     def step(self, state):
         ''' Predict the action for generating training data
@@ -192,6 +195,7 @@ class DQNAgent(object):
             print("\nINFO - Copied model parameters to target network.")
 
         self.train_t += 1
+        return loss
 
     def feed_memory(self, state, action, reward, next_state, done):
         ''' Feed transition to memory

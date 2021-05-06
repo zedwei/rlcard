@@ -205,3 +205,33 @@ def reorganize_with_payoff_trace(trajectories, payoffs):
 
             new_trajectories[player].append(transition)
     return new_trajectories
+
+def tournament_tractor(env, num):
+    ''' Evaluate he performance of the agents in the environment
+
+    Args:
+        env (Env class): The environment to be evaluated.
+        num (int): The number of games to play.
+
+    Returns:
+        A list of avrage payoffs for each player
+    '''
+    payoffs = [0 for _ in range(env.player_num)]
+    counter = 0
+    while counter < num:
+        _, _payoffs = env.run(is_training=False)
+        if isinstance(_payoffs, list):
+            for _p in _payoffs:
+                for i, _ in enumerate(payoffs):
+                    if _p[i] > _p[(i+1)%2]:
+                        payoffs[i] += 1
+                counter += 1
+        else:
+            for i, _ in enumerate(payoffs):
+                if _payoffs[i] > _payoffs[(i+1)%2]:
+                    payoffs[i] += 1
+            counter += 1
+    for i, _ in enumerate(payoffs):
+        payoffs[i] /= counter
+    return payoffs
+

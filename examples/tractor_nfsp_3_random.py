@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 import rlcard
 from rlcard.agents import NFSPAgent
-from rlcard.agents import RandomAgent
+from rlcard.agents import RandomAgent, TractorRuleAgent
 from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 
@@ -45,35 +45,39 @@ with tf.Session(config=config) as sess:
     global_step = tf.Variable(0, name='global_step', trainable=False)
 
     # Set up the agents
-    nfsp_agent = NFSPAgent(sess,
-                        scope='nfsp',
-                        action_num=env.action_num,
-                        state_shape=env.state_shape,
-                        hidden_layers_sizes=[512,1024,2048,1024,512],
-                        #hidden_layers_sizes=[512,1024,512],
-                    #   hidden_layers_sizes=[64],
-                        anticipatory_param=0.5,
-                        batch_size=256,
-                        rl_learning_rate=0.00005,
-                        sl_learning_rate=0.00001,
-                        min_buffer_size_to_learn=memory_init_size,
-                        q_replay_memory_size=int(1e5),
-                        q_replay_memory_init_size=memory_init_size,
-                        train_every = train_every,
-                        q_train_every=train_every,
-                        q_batch_size=256,
-                        q_mlp_layers=[512,1024,2048,1024,512],
-                    #   q_mlp_layers=[512,1024,512],
-                    #   q_mlp_layers=[64],
-                        reservoir_buffer_capacity=int(1e4),
-                        # evaluate_with='average_policy',
-                        # evaluate_with='best_response',
-                        )
+    agents = []
+    for i in range(2):
+        nfsp_agent = NFSPAgent(sess,
+                               scope='nfsp' + str(i),
+                               action_num=env.action_num,
+                               state_shape=env.state_shape,
+                               hidden_layers_sizes=[512,1024,2048,1024,512],
+                               #hidden_layers_sizes=[512,1024,512],
+                            #  hidden_layers_sizes=[64],
+                               anticipatory_param=0.5,
+                               batch_size=256,
+                               rl_learning_rate=0.00005,
+                               sl_learning_rate=0.00001,
+                               min_buffer_size_to_learn=memory_init_size,
+                               q_replay_memory_size=int(1e5),
+                               q_replay_memory_init_size=memory_init_size,
+                               train_every = train_every,
+                               q_train_every=train_every,
+                               q_batch_size=256,
+                               q_mlp_layers=[512,1024,2048,1024,512],
+                            #  q_mlp_layers=[512,1024,512],
+                            #  q_mlp_layers=[64],
+                               reservoir_buffer_capacity=int(1e4))
+        agents.append(nfsp_agent)
 
     random_agent = RandomAgent(action_num=eval_env.action_num)
+    rule_agent = TractorRuleAgent(action_num=eval_env.action_num)
 
-    env.set_agents([nfsp_agent, random_agent, random_agent, random_agent])
-    eval_env.set_agents([nfsp_agent, random_agent, random_agent, random_agent])
+    # env.set_agents([agents[0], random_agent, agents[1], random_agent])
+    # eval_env.set_agents([agents[0], random_agent, agents[1], random_agent])
+
+    env.set_agents([agents[0], rule_agent, agents[1], rule_agent])
+    eval_env.set_agents([agents[0], rule_agent, agents[1], rule_agent])
 
     # Initialize global variables
     sess.run(tf.global_variables_initializer())
@@ -84,14 +88,16 @@ with tf.Session(config=config) as sess:
 
     for episode in tqdm(range(episode_num)):
         # First sample a policy for the episode
-        env.agents[0].sample_episode_policy()
+        for agent_id in [0, 2]:
+            env.agents[agent_id].sample_episode_policy()
 
         # Generate data from the environment
         trajectories, _ = env.run(is_training=True)
 
         # Feed transitions into agent memory, and train the agent
-        for ts in trajectories[0]:
-            env.agents[0].feed(ts)
+        for agent_id in [0, 2]:
+            for ts in trajectories[agent_id]:
+                env.agents[agent_id].feed(ts)
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:

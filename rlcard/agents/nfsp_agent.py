@@ -167,11 +167,14 @@ class NFSPAgent(object):
         Args:
             ts (list): A list of 5 elements that represent the transition.
         '''
-        self._rl_agent.feed(ts)
+        sl_loss = None
+        rl_loss = self._rl_agent.feed(ts)
         self.total_t += 1
         if self.total_t>0 and len(self._reservoir_buffer) >= self._min_buffer_size_to_learn and self.total_t%self._train_every == 0:
             sl_loss  = self.train_sl()
             # print('\rINFO - Agent {}, step {}, sl-loss: {}'.format(self._scope, self.total_t, sl_loss), end='')
+        
+        return rl_loss, sl_loss
 
     def step(self, state):
         ''' Returns the action to be taken.
