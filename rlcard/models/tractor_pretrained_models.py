@@ -42,8 +42,8 @@ class TractorNFSPModel(Model):
                                 scope='nfsp' + str(i),
                                 action_num=env.action_num,
                                 state_shape=env.state_shape,
-                                hidden_layers_sizes=[512,1024,2048,1024,512],
-                                q_mlp_layers=[512,1024,2048,1024,512])
+                                hidden_layers_sizes=[512,1024,512],
+                                q_mlp_layers=[512,1024,512])
                 self.nfsp_agents.append(agent)
 
             # for i in range(1):
@@ -55,7 +55,7 @@ class TractorNFSPModel(Model):
             #                     q_mlp_layers=[512,1024,2048,1024,512])
             #     self.nfsp_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, '2021_05_06_08_27_44\\tractor_nfsp')
+        check_point_path = os.path.join(TRACTOR_PATH, '20210506_combined_rewards')
 
         with self.sess.as_default():
             with self.graph.as_default():

@@ -33,3 +33,7 @@ models/tractor_nfsp_1_nfsp_3_random/result.txt
 rlcard/models/tractor/2021_05_06_08_27_44/tractor_nfsp/checkpoint
 rlcard/models/tractor/tractor_nfsp_1_nfsp_3_random/checkpoint
 rlcard/models/tractor/tractor_nfsp_1_nfsp_3_random/result.txt
+Log/2021_05_07_03_02_57.txt
+rlcard/models/tractor/20210506_combined_rewards/checkpoint
+rlcard/models/tractor/2021_05_07_03_02_57/tractor_nfsp/checkpoint
+rlcard/models/tractor_pretrained_models.py

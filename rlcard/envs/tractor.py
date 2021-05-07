@@ -17,7 +17,8 @@ class TractorEnv(Env):
         self.name = 'tractor'
         self.game = Game()
         super().__init__(config)
-        self.state_shape = [3, 3, 54]
+        # self.state_shape = [3, 3, 54]
+        self.state_shape = [5, 3, 54]
 
     def run(self, is_training=False):
         '''
@@ -73,11 +74,11 @@ class TractorEnv(Env):
         # Payoffs
         # Option 1: get final payoffs after each game
         payoffs = self.get_payoffs()
-        # trajectories = reorganize(trajectories, payoffs)
+        trajectories = reorganize(trajectories, payoffs)
 
         # Option 2: get payoffs after each round
-        payoffs_with_trace = self.get_payoffs_trace()
-        trajectories = reorganize_with_payoff_trace(trajectories, payoffs_with_trace)
+        # payoffs_with_trace = self.get_payoffs_trace()
+        # trajectories = reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs)
 
         return trajectories, payoffs
         
@@ -97,16 +98,21 @@ class TractorEnv(Env):
                     # up-player possible hand
                     # down-player possible hand
         '''
-        obs = np.zeros((3, 3, 54), dtype=int)
-        for index in range(3):
+        # obs = np.zeros((3, 3, 54), dtype=int)
+        obs = np.zeros((5, 3, 54), dtype=int)
+        # for index in range(3):
+        for index in range(5):
             obs[index][0] = np.ones(54, dtype=int)
         encode_cards(obs[0], state['current_hand'])
         encode_cards(obs[1], state['others_hand'][0])
+        encode_cards(obs[2], state['others_hand'][1])
+        encode_cards(obs[3], state['others_hand'][2])
         
         current_round = [x for x in state['current_round'] if x != None]
         if (len(current_round) > 0):
             current_round = functools.reduce(lambda z,y : z + y, current_round)
-            encode_cards(obs[2], current_round)
+            # encode_cards(obs[2], current_round)
+            encode_cards(obs[4], current_round)
 
         extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions()}
         if self.allow_raw_data:

@@ -118,17 +118,20 @@ class TractorGame(object):
         player_front = self.players[(player.player_id + 2) % len(self.players)]
         player_up = self.players[(player.player_id - 1) % len(self.players)]
 
-        others_hand = []
-        others_hand.extend(player_up.current_hand)
-        others_hand.extend(player_front.current_hand)
-        others_hand.extend(player_down.current_hand)
-        others_hand.extend(self.round.dealer.deck[100:108])
+        # others_hand = []
+        # others_hand.extend(player_up.current_hand)
+        # others_hand.extend(player_front.current_hand)
+        # others_hand.extend(player_down.current_hand)
+        # others_hand.extend(self.round.dealer.deck[100:108])
         
-        # others_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
-
         # TODO: update logic to more restrictive card guess
-        player_down_hand = others_hand
-        player_front_hand = others_hand
-        player_up_hand = others_hand
+        # player_down_hand = others_hand
+        # player_front_hand = others_hand
+        # player_up_hand = others_hand
+
+        # start with all others' hands known
+        player_down_hand = player_down.current_hand
+        player_front_hand = player_front.current_hand
+        player_up_hand = player_up.current_hand
 
         return [player_down_hand, player_front_hand, player_up_hand]

@@ -27,7 +27,8 @@ episode_num = 100000
 memory_init_size = 1000
 
 # Train the agent every X steps
-train_every = 256
+train_every = 64
+# train_every = 256
 
 # The paths for saving the logs and learning curves
 log_dir = './experiments/tractor_nfsp_result/'

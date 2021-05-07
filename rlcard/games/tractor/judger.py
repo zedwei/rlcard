@@ -119,12 +119,22 @@ class TractorJudger(object):
 
     @staticmethod
     def judge_payoffs(winner_id, scores):
-        # payoffs = np.array([0, 0, 0, 0])
-        # for player_id in winner_id:
-            # payoffs[player_id] = 1
+        # use final score as payoff
         # for player_id in range(4):
         #     payoffs[player_id] = scores[player_id % 2]
-        average_score = (scores[0] + scores[1]) / 2
-        payoffs = np.array([scores[0] - average_score, scores[1] - average_score, scores[0] - average_score, scores[1] - average_score])
+        
+        # use final score delta (against total_score / 2) as payoff
+        # average_score = (scores[0] + scores[1]) / 2
+        # payoffs = np.array([scores[0] - average_score, scores[1] - average_score, scores[0] - average_score, scores[1] - average_score])
 
+        # assign constant value (+- score_unit) as final pay-off
+        score_unit = 1
+        # score_unit = 100
+
+        if scores[0] > scores[1]:
+            payoffs = np.array([score_unit, -score_unit, score_unit, -score_unit])
+        elif scores[0] < scores[1]:
+            payoffs = np.array([-score_unit, score_unit, -score_unit, score_unit])
+        else:
+            payoffs = np.array([0, 0, 0, 0])
         return payoffs

@@ -31,7 +31,7 @@ class TractorPlayer(object):
         # state['self'] = self.player_id
         # state['initial_hand'] = self.initial_hand
         state['current_hand'] = self.current_hand
-        state['others_hand'] = [others_hands[0]]
+        state['others_hand'] = others_hands
         state['current_round'] = public['current_round'].copy()
         state['current_player_id'] = public['current_player_id']
         state['first_player_id'] = public['first_player_id']

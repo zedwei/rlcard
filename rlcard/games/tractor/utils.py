@@ -178,7 +178,7 @@ def encode_cards(plane, cards):
             plane[1][rank] = 0
             plane[2][rank] = 1
 
-def reorganize_with_payoff_trace(trajectories, payoffs):
+def reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs):
     ''' Reorganize the trajectory to make it RL friendly
 
     Args:
@@ -194,8 +194,9 @@ def reorganize_with_payoff_trace(trajectories, payoffs):
 
     for player in range(player_num):
         for i in range(0, len(trajectories[player])-2, 2):
-            reward = payoffs[i // 2][player % 2]
+            reward = payoffs_with_trace[i // 2][player % 2]
             if i ==len(trajectories[player])-3:
+                # reward += payoffs[player] # add a final payoff of winning/losing a game
                 done = True
             else:
                 done = False
