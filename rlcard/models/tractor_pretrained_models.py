@@ -55,7 +55,7 @@ class TractorNFSPModel(Model):
             #                     q_mlp_layers=[512,1024,2048,1024,512])
             #     self.nfsp_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, '20210506_combined_rewards')
+        check_point_path = os.path.join(TRACTOR_PATH, '20210507_2_nfsp_2_rule_game_reward_only')
 
         with self.sess.as_default():
             with self.graph.as_default():

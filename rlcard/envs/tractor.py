@@ -18,7 +18,7 @@ class TractorEnv(Env):
         self.game = Game()
         super().__init__(config)
         # self.state_shape = [3, 3, 54]
-        self.state_shape = [5, 3, 54]
+        self.state_shape = [6, 3, 54]
 
     def run(self, is_training=False):
         '''
@@ -99,7 +99,7 @@ class TractorEnv(Env):
                     # down-player possible hand
         '''
         # obs = np.zeros((3, 3, 54), dtype=int)
-        obs = np.zeros((5, 3, 54), dtype=int)
+        obs = np.zeros((6, 3, 54), dtype=int)
         # for index in range(3):
         for index in range(5):
             obs[index][0] = np.ones(54, dtype=int)
@@ -113,6 +113,9 @@ class TractorEnv(Env):
             current_round = functools.reduce(lambda z,y : z + y, current_round)
             # encode_cards(obs[2], current_round)
             encode_cards(obs[4], current_round)
+        
+        obs[5][0][0] = state['score'][0]
+        obs[5][0][1] = state['score'][1]
 
         extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions()}
         if self.allow_raw_data:

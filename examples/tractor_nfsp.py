@@ -18,7 +18,7 @@ env = rlcard.make('tractor', config={'seed': 0})
 eval_env = rlcard.make('tractor', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 1000
+evaluate_every = 5000
 evaluate_num = 1000
 episode_num = 100000
 # episode_num = 10000
@@ -56,8 +56,8 @@ with tf.Session(config=config) as sess:
                               #  hidden_layers_sizes=[512,1024,2048,1024,512],
                                hidden_layers_sizes=[512,1024,512],
                                reservoir_buffer_capacity=int(1e4),
-                              #  anticipatory_param=0.5,
-                               anticipatory_param=0.1,
+                               anticipatory_param=0.5,
+                            #    anticipatory_param=0.1,
                                batch_size=256,
                                train_every = train_every,
                               #  rl_learning_rate=0.00005,

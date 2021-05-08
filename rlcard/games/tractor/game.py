@@ -122,7 +122,7 @@ class TractorGame(object):
         # others_hand.extend(player_up.current_hand)
         # others_hand.extend(player_front.current_hand)
         # others_hand.extend(player_down.current_hand)
-        # others_hand.extend(self.round.dealer.deck[100:108])
+        # # others_hand.extend(self.round.dealer.deck[100:108])
         
         # TODO: update logic to more restrictive card guess
         # player_down_hand = others_hand

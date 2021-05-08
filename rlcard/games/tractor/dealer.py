@@ -40,7 +40,9 @@ class TractorDealer(object):
             player_id: the id of the player to be dealt cards
             num: number of cards to be dealt
         '''
-        hand_num = 25
+        # hand_num = 25
+
+        hand_num = 27
         for index, player in enumerate(players):
             current_hand = self.deck[index * hand_num : (index+1) * hand_num]
             current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))

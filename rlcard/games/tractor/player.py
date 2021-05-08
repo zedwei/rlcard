@@ -36,6 +36,7 @@ class TractorPlayer(object):
         state['current_player_id'] = public['current_player_id']
         state['first_player_id'] = public['first_player_id']
         state['greater_player_id'] = public['greater_player_id']
+        state['score'] = public['score']
         state['actions'] = actions
         return state
 

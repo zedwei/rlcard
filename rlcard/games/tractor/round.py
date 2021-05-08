@@ -41,8 +41,8 @@ class TractorRound(object):
         self.first_player = self.current_player
         self.greater_player = self.current_player
 
-        self.public = {'deck': self.dealer.deck[0:100],
-                       'banker_cards': self.dealer.deck[100:108],
+        self.public = {'deck': self.dealer.deck[0:108],
+                    #    'banker_cards': self.dealer.deck[100:108],
                        'banker_id': self.banker_id, 
                        'trump': self.trump,
                        'score': self.score, 
