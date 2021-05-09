@@ -26,10 +26,11 @@ import tensorflow as tf
 
 from rlcard.agents.dqn_agent import DQNAgent
 from rlcard.utils.utils import remove_illegal
+from rlcard.agents.tractor_rule_agent import TractorRuleAgent
 
 Transition = collections.namedtuple('Transition', 'info_state action_probs')
 
-MODE = enum.Enum('mode', 'best_response average_policy')
+MODE = enum.Enum('mode', 'best_response average_policy rule_policy')
 
 class NFSPAgent(object):
     ''' NFSP Agent implementation in TensorFlow.
@@ -134,7 +135,7 @@ class NFSPAgent(object):
         self._X = tf.contrib.layers.flatten(self._info_state_ph)
 
         # Boolean to indicate whether is training or not
-        self.is_train = tf.placeholder(tf.bool, name="is_train");
+        self.is_train = tf.placeholder(tf.bool, name="is_train")
 
         # Batch Normalization
         self._X = tf.layers.batch_normalization(self._X, training=True)
@@ -195,6 +196,13 @@ class NFSPAgent(object):
         elif self._mode == MODE.average_policy:
             probs = self._act(obs)
 
+        elif self._mode == MODE.rule_policy:
+            action = TractorRuleAgent.step(state)
+            probs = np.zeros(self._action_num, dtype=float)
+            probs[action] = 1
+            one_hot = np.eye(len(probs))[action]
+            self._add_transition(obs, one_hot)
+
         probs = remove_illegal(probs, legal_actions)
         action = np.random.choice(len(probs), p=probs)
 
@@ -222,10 +230,12 @@ class NFSPAgent(object):
             raise ValueError("'evaluate_with' should be either 'average_policy' or 'best_response'.")
         return action, probs
 
-    def sample_episode_policy(self):
+    def sample_episode_policy(self, use_rule_policy=False):
         ''' Sample average/best_response policy
         '''
-        if np.random.rand() < self._anticipatory_param:
+        if use_rule_policy:
+            self._mode = MODE.rule_policy
+        elif np.random.rand() < self._anticipatory_param:
             self._mode = MODE.best_response
         else:
             self._mode = MODE.average_policy

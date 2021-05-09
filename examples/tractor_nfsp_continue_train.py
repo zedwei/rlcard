@@ -13,6 +13,8 @@ from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor
 
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractor')
+
 # Make environment
 env = rlcard.make('tractor', config={'seed': 0})
 eval_env = rlcard.make('tractor', config={'seed': 0})
@@ -56,9 +58,9 @@ with tf.Session(config=config) as sess:
                                hidden_layers_sizes=[512,1024,512],
                                reservoir_buffer_capacity=int(1e4),
                             #    reservoir_buffer_capacity=int(1e5),
-                               anticipatory_param=2,
+                            #    anticipatory_param=2,
                             #    anticipatory_param=0.5,
-                            #    anticipatory_param=0.1,
+                               anticipatory_param=0.1,
                                batch_size=256,
                                train_every = train_every,
                               #  rl_learning_rate=0.00005,
@@ -95,16 +97,20 @@ with tf.Session(config=config) as sess:
     sess.run(tf.global_variables_initializer())
 
     # Init a Logger to plot the learning curvefrom rlcard.agents.random_agent import RandomAgent
-
     logger = Logger(log_dir)
 
     latest_rl_loss = None
     latest_sl_loss = None
 
+    # load the pre-trained model
+    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp_rule')
+    saver = tf.train.Saver()
+    saver.restore(sess, tf.train.latest_checkpoint(check_point_path))
+
     for episode in tqdm(range(episode_num)):
         # First sample a policy for the episode
         for agent_id in [0, 2]:
-            env.agents[agent_id].sample_episode_policy(use_rule_policy=True)
+            env.agents[agent_id].sample_episode_policy(use_rule_policy=False)
 
         # Generate data from the environment
         trajectories, _ = env.run(is_training=True)
@@ -130,7 +136,7 @@ with tf.Session(config=config) as sess:
     logger.plot('NFSP')
     
     # Save model
-    save_dir = 'models/tractor_nfsp'
+    save_dir = 'models/tractor_nfsp_continue_train'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     saver = tf.train.Saver()

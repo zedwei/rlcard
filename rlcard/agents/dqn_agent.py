@@ -151,7 +151,6 @@ class DQNAgent(object):
         '''
         q_values = self.q_estimator.predict(self.sess, np.expand_dims(state['obs'], 0))[0]
         # probs = remove_illegal(np.exp(q_values), state['legal_actions'])
-        
         # probs = remove_illegal_without_norm(np.exp(q_values), state['legal_actions'])
         probs = remove_illegal_without_norm(q_values, state['legal_actions'])
         best_action = np.argmax(probs)

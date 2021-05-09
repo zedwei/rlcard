@@ -44,6 +44,7 @@ class TractorNFSPModel(Model):
                                 state_shape=env.state_shape,
                                 hidden_layers_sizes=[512,1024,512],
                                 q_mlp_layers=[512,1024,512],
+                                # evaluate_with='average_policy')
                                 evaluate_with='best_response')
 
                 self.nfsp_agents.append(agent)

@@ -82,11 +82,11 @@ class TractorEnv(Env):
         # Payoffs
         # Option 1: get final payoffs after each game
         payoffs = self.get_payoffs()
-        trajectories = reorganize(trajectories, payoffs)
+        # trajectories = reorganize(trajectories, payoffs)
 
         # Option 2: get payoffs after each round
-        # payoffs_with_trace = self.get_payoffs_trace()
-        # trajectories = reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs)
+        payoffs_with_trace = self.get_payoffs_trace()
+        trajectories = reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs)
 
         return trajectories, payoffs
         
