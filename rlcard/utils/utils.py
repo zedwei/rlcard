@@ -360,6 +360,24 @@ def remove_illegal(action_probs, legal_actions):
         probs /= sum(probs)
     return probs
 
+def remove_illegal_without_norm(action_probs, legal_actions):
+    ''' Remove illegal actions only
+
+    Args:
+        action_probs (numpy.array): A 1 dimention numpy array.
+        legal_actions (list): A list of indices of legal actions.
+
+    Returns:
+        probd (numpy.array): A normalized vector without legal actions.
+    '''
+    probs = np.zeros(action_probs.shape[0]) - 100
+    probs[legal_actions] = action_probs[legal_actions]
+
+    if np.sum(probs) == 0:
+        probs[legal_actions] = 1 / len(legal_actions)
+
+    return probs
+
 
 def assign_task(task_num, process_num):
     ''' Assign the number of tasks according to the number of processes

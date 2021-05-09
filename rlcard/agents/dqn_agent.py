@@ -30,7 +30,7 @@ import numpy as np
 import tensorflow as tf
 from collections import namedtuple
 
-from rlcard.utils.utils import remove_illegal
+from rlcard.utils.utils import remove_illegal, remove_illegal_without_norm
 
 Transition = namedtuple('Transition', ['state', 'action', 'reward', 'next_state', 'done'])
 
@@ -150,7 +150,10 @@ class DQNAgent(object):
             probs (list): a list of probabilies
         '''
         q_values = self.q_estimator.predict(self.sess, np.expand_dims(state['obs'], 0))[0]
-        probs = remove_illegal(np.exp(q_values), state['legal_actions'])
+        # probs = remove_illegal(np.exp(q_values), state['legal_actions'])
+        
+        # probs = remove_illegal_without_norm(np.exp(q_values), state['legal_actions'])
+        probs = remove_illegal_without_norm(q_values, state['legal_actions'])
         best_action = np.argmax(probs)
         return best_action, probs
 
@@ -269,6 +272,7 @@ class Estimator():
 
         # Batch Normalization
         X = tf.layers.batch_normalization(self.X_pl, training=self.is_train)
+        # X = self.X_pl
 
         # Fully connected layers
         fc = tf.contrib.layers.flatten(X)

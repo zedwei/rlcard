@@ -21,7 +21,7 @@ eval_env = rlcard.make('tractor', config={'seed': 0})
 evaluate_every = 5000
 evaluate_num = 1000
 episode_num = 100000
-# episode_num = 10000
+# episode_num = 5000
 
 # The intial memory size
 memory_init_size = 1000
@@ -56,7 +56,8 @@ with tf.Session(config=config) as sess:
                               #  hidden_layers_sizes=[512,1024,2048,1024,512],
                                hidden_layers_sizes=[512,1024,512],
                                reservoir_buffer_capacity=int(1e4),
-                               anticipatory_param=0.5,
+                               anticipatory_param=2,
+                            #    anticipatory_param=0.5,
                             #    anticipatory_param=0.1,
                                batch_size=256,
                                train_every = train_every,
@@ -109,9 +110,9 @@ with tf.Session(config=config) as sess:
         for agent_id in [0, 2]:
             for ts in trajectories[agent_id]:
                 rl_loss, sl_loss = env.agents[agent_id].feed(ts)
-                if rl_loss != None:
+                if rl_loss != None and agent_id == 0:
                   latest_rl_loss = rl_loss
-                if sl_loss != None:
+                if sl_loss != None and agent_id == 0:
                   latest_sl_loss = sl_loss
 
         # Evaluate the performance. Play with random agents.

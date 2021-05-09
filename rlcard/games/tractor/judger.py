@@ -128,13 +128,21 @@ class TractorJudger(object):
         # payoffs = np.array([scores[0] - average_score, scores[1] - average_score, scores[0] - average_score, scores[1] - average_score])
 
         # assign constant value (+- score_unit) as final pay-off
-        score_unit = 1
-        # score_unit = 100
+        
+        # score_unit = 1
+        score_unit = 100
+
+        # if scores[0] > scores[1]:
+        #     payoffs = np.array([score_unit, -score_unit, score_unit, -score_unit])
+        # elif scores[0] < scores[1]:
+        #     payoffs = np.array([-score_unit, score_unit, -score_unit, score_unit])
+        # else:
+        #     payoffs = np.array([0, 0, 0, 0])
 
         if scores[0] > scores[1]:
-            payoffs = np.array([score_unit, -score_unit, score_unit, -score_unit])
+            payoffs = np.array([score_unit, 0, score_unit, 0])
         elif scores[0] < scores[1]:
-            payoffs = np.array([-score_unit, score_unit, -score_unit, score_unit])
+            payoffs = np.array([0, score_unit, 0, score_unit])
         else:
             payoffs = np.array([0, 0, 0, 0])
         return payoffs

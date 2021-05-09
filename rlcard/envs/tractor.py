@@ -20,7 +20,7 @@ class TractorEnv(Env):
         # self.state_shape = [3, 3, 54]
         self.state_shape = [6, 3, 54]
 
-    def run(self, is_training=False):
+    def run(self, is_training=False, debug=False):
         '''
         Run a complete game, either for evaluation or training RL agent.
 
@@ -47,7 +47,15 @@ class TractorEnv(Env):
         while not self.is_over():
             # Agent plays
             if not is_training:
-                action, _ = self.agents[player_id].eval_step(state)
+                action, prob = self.agents[player_id].eval_step(state)
+                if debug and player_id == 0:
+                    print(','.join(self.game.players[player_id].current_hand))
+                    print(ACTION_LIST[action])
+                    probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -100}
+                    probs = {k: round(v, 4) for k, v in probs.items()}
+                    probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
+                    print(probs)
+                    print()
             else:
                 action = self.agents[player_id].step(state)
 
