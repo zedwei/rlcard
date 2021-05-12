@@ -103,13 +103,13 @@ with tf.Session(config=config) as sess:
     #                     ['4H','3H'],
     #                     ['JH','TH']]
 
-    predefined_hands = [['AH'],
-                        ['KH'],
-                        ['4H'],
-                        ['JH']]
-    state = env.reset_predefine_state(predefined_hands)
-    for i in range(4):
-        print(env.game.players[i].current_hand)
+    # predefined_hands = [['AH'],
+    #                     ['KH'],
+    #                     ['4H'],
+    #                     ['JH']]
+    # state = env.reset_predefine_state(predefined_hands)
+    # for i in range(4):
+    #     print(env.game.players[i].current_hand)
 
     
     t = trange(episode_num, desc='rl-loss:', leave=True)

@@ -185,7 +185,9 @@ def tournament_tractor(env, num):
     '''
     payoffs = [0 for _ in range(env.player_num)]
 
-    for _ in tqdm(range(num)):
+    print()
+    for iter in range(num):
+        print('\rEvaluating {}/{} episodes...'.format(iter, num), end='')
         _, _payoffs = env.run(is_training=False)
         if isinstance(_payoffs, list):
             for _p in _payoffs:
