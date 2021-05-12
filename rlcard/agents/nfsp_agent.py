@@ -190,6 +190,7 @@ class NFSPAgent(object):
         legal_actions = state['legal_actions']
         if self._mode == MODE.best_response:
             probs = self._rl_agent.predict(obs)
+
             one_hot = np.eye(len(probs))[np.argmax(probs)]
             self._add_transition(obs, one_hot)
 

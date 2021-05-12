@@ -55,3 +55,8 @@ register(
     model_id='tractor_nfsp_v1',
     entry_point='rlcard.models.tractor_pretrained_models:TractorNFSPModel'
 )
+
+register(
+    model_id='tractor_dqn_v1',
+    entry_point='rlcard.models.tractor_pretrained_models:TractorDQNModel'
+)

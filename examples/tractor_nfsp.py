@@ -18,10 +18,11 @@ env = rlcard.make('tractor', config={'seed': 0})
 eval_env = rlcard.make('tractor', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 2000
+evaluate_every = 5000
 evaluate_num = 1000
-episode_num = 100000
+# episode_num = 100000
 # episode_num = 5000
+episode_num = 500000
 
 # The intial memory size
 memory_init_size = 1000

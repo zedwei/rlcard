@@ -5,8 +5,11 @@ import os
 
 import rlcard
 from rlcard.models.model import Model
+from rlcard.agents import DQNAgent
+
 
 TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractor')
+SIMPLE_TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\simple_tractor')
 
 class TractorNFSPModel(Model):
     ''' A pretrained model on Tractor with NFSP
@@ -58,7 +61,7 @@ class TractorNFSPModel(Model):
             #                     q_mlp_layers=[512,1024,2048,1024,512])
             #     self.nfsp_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp')
+        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp_rule_500k_iter')
 
         with self.sess.as_default():
             with self.graph.as_default():
@@ -75,3 +78,60 @@ class TractorNFSPModel(Model):
               functioning well.
         '''
         return self.nfsp_agents
+
+
+class TractorDQNModel(Model):
+    ''' A pretrained model on Tractor with NFSP
+    '''
+
+    def __init__(self):
+        ''' Load pretrained model
+        '''
+        import tensorflow as tf
+        from rlcard.agents import NFSPAgent, RandomAgent
+        self.graph = tf.Graph()
+
+        # Mitigation for gpu memory issue
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+
+        self.sess = tf.Session(graph=self.graph, config=config)
+
+        env = rlcard.make('tractor')
+        with self.graph.as_default():
+            self.dqn_agents = []
+            for i in range(1):
+                agent = DQNAgent(self.sess,
+                     scope='dqn',
+                     action_num=env.action_num,
+                     state_shape=env.state_shape,
+                     mlp_layers=[2048,2048],
+                     replay_memory_size=100000,
+                     update_target_estimator_every=100,
+                     discount_factor=0.99,
+                     epsilon_start=1,
+                     epsilon_end=0.1,
+                     epsilon_decay_steps=100000,
+                     batch_size=256,
+                     learning_rate=0.00002,
+                     use_rule_policy=False
+                )
+                self.dqn_agents.append(agent)
+
+        check_point_path = os.path.join(SIMPLE_TRACTOR_PATH, 'tractor_dqn_100k_iters')
+
+        with self.sess.as_default():
+            with self.graph.as_default():
+                saver = tf.train.Saver()
+                saver.restore(self.sess, tf.train.latest_checkpoint(check_point_path))
+    @property
+    def agents(self):
+        ''' Get a list of agents for each position in a the game
+
+        Returns:
+            agents (list): A list of agents
+
+        Note: Each agent should be just like RL agent with step and eval_step
+              functioning well.
+        '''
+        return self.dqn_agents

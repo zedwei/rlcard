@@ -18,7 +18,7 @@ class TractorEnv(Env):
         self.game = Game()
         super().__init__(config)
         # self.state_shape = [3, 3, 54]
-        self.state_shape = [6, 3, 54]
+        self.state_shape = [5, 3, 54]
 
     def run(self, is_training=False, debug=False):
         '''
@@ -41,6 +41,10 @@ class TractorEnv(Env):
 
         trajectories = [[] for _ in range(self.player_num)]
         state, player_id = self.reset()
+
+        if debug:
+            for i in range(4):
+                print(self.game.players[i].current_hand)
 
         # Loop to play the game
         trajectories[player_id].append(state)
@@ -107,7 +111,7 @@ class TractorEnv(Env):
                     # down-player possible hand
         '''
         # obs = np.zeros((3, 3, 54), dtype=int)
-        obs = np.zeros((6, 3, 54), dtype=int)
+        obs = np.zeros((5, 3, 54), dtype=int)
         # for index in range(3):
         for index in range(5):
             obs[index][0] = np.ones(54, dtype=int)
@@ -122,8 +126,8 @@ class TractorEnv(Env):
             # encode_cards(obs[2], current_round)
             encode_cards(obs[4], current_round)
         
-        obs[5][0][0] = state['score'][0]
-        obs[5][0][1] = state['score'][1]
+        # obs[5][0][0] = state['score'][0]
+        # obs[5][0][1] = state['score'][1]
 
         extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions()}
         if self.allow_raw_data:
@@ -195,3 +199,10 @@ class TractorEnv(Env):
         state['current_player'] = self.game.round.current_player
         state['legal_actions'] = self.game.state['actions']
         return state
+
+    def reset_predefine_state(self, predefined_hands):
+        '''
+        Reset environment in with pre-defined player hands
+        '''
+        state, player_id = self.game.init_game(predefined_hands)
+        return self._extract_state(state)

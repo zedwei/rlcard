@@ -19,12 +19,14 @@ class TractorDealer(object):
         ''' The dealer should have all the cards at the beginning of a game
         '''
         self.np_random = np_random
-        # self.deck = init_108_deck()
-        # self.deck.sort(key=functools.cmp_to_key(tractor_sort_card))
 
         self.deck = []
         self.deck.extend(CARD_RANK_STR)
         self.deck.extend(CARD_RANK_STR)
+        
+        # cards = ['3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH']
+        # self.deck.extend(cards)
+        # self.deck.extend(cards)
 
         self.banker = None
 
@@ -40,16 +42,15 @@ class TractorDealer(object):
             player_id: the id of the player to be dealt cards
             num: number of cards to be dealt
         '''
-        # hand_num = 25
+        hand_num = len(self.deck) // 4
 
-        hand_num = 27
         for index, player in enumerate(players):
             current_hand = self.deck[index * hand_num : (index+1) * hand_num]
             current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
             player.current_hand = current_hand
             player.initial_hand = current_hand
     
-    def deal_cards_and_determine_role(self, players):
+    def deal_cards_and_determine_role(self, players, predefined_hands=None):
         ''' Deal cards and determine banker according to players' hand
 
         Args:
@@ -59,8 +60,15 @@ class TractorDealer(object):
             int: banker's player_id
         '''
         # deal cards
-        self.shuffle()
-        self.deal_cards(players)
+        if predefined_hands == None:
+            self.shuffle()
+            self.deal_cards(players)
+        else:
+            for player_id in range(4):
+                current_hand = predefined_hands[player_id]
+                current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
+                players[player_id].current_hand = current_hand
+
         players[0].role = 'banker'
         players[1].role = 'opponent'
         players[2].role = 'declarer'

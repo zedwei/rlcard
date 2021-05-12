@@ -26,7 +26,7 @@ episode_num = 100000
 # episode_num = 5000
 
 # The intial memory size
-memory_init_size = 1000
+memory_init_size = 10000
 
 # Train the agent every X steps
 train_every = 64
@@ -103,9 +103,11 @@ with tf.Session(config=config) as sess:
     latest_sl_loss = None
 
     # load the pre-trained model
-    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp_rule')
+    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp_rule_500k_iter')
     saver = tf.train.Saver()
     saver.restore(sess, tf.train.latest_checkpoint(check_point_path))
+
+    graph = tf.get_default_graph()
 
     for episode in tqdm(range(episode_num)):
         # First sample a policy for the episode

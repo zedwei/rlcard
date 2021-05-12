@@ -18,7 +18,7 @@ class TractorGame(object):
         self.np_random = np.random.RandomState()
         self.num_players = 4
 
-    def init_game(self):
+    def init_game(self, predefined_hands=None):
         ''' Initialize all characters in the game and start round 1
         '''
         # initialize public variables
@@ -31,7 +31,7 @@ class TractorGame(object):
 
         # initialize round to deal cards
         self.round = Round(self.np_random)
-        self.round.initiate(self.players)
+        self.round.initiate(self.players, predefined_hands)
 
         # initialize judger
         self.judger = Judger(self.players, self.np_random)

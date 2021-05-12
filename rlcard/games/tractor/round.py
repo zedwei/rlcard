@@ -29,13 +29,13 @@ class TractorRound(object):
         self.current_round = [None, None, None, None]
         self.played_player_in_round = 0
 
-    def initiate(self, players):
+    def initiate(self, players, predefined_hands=None):
         ''' Call dealer to deal cards and determine banker.
 
         Args:
             players (list): list of DoudizhuPlayer objects
         '''
-        banker_id = self.dealer.deal_cards_and_determine_role(players)
+        banker_id = self.dealer.deal_cards_and_determine_role(players, predefined_hands)
         self.banker_id = banker_id
         self.current_player = players[banker_id]
         self.first_player = self.current_player
@@ -78,13 +78,14 @@ class TractorRound(object):
         else:
             # current round ends
             # calculate score in current round
+            # score = 1.0 * self.calc_score_in_round() / 10
             score = self.calc_score_in_round()
             self.score[self.greater_player.player_id % 2] += score
 
             # add delta score to score_trace
             score_trace_element = [0, 0]
             score_trace_element[self.greater_player.player_id % 2] += score
-            score_trace_element[(self.greater_player.player_id + 1) % 2] -= score
+            # score_trace_element[(self.greater_player.player_id + 1) % 2] -= score
             self.score_trace.append(score_trace_element)            
 
             # reset round status with next player

@@ -36,6 +36,7 @@ class TractorRuleAgent(object):
 
         if first_player_in_round or not has_score:
             return np.random.choice(state['legal_actions'])
+            # return state['legal_actions'][0]
 
         else:
             actions = [ACTION_LIST[x].split(',') for x in state['legal_actions']]

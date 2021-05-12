@@ -31,6 +31,7 @@ import tensorflow as tf
 from collections import namedtuple
 
 from rlcard.utils.utils import remove_illegal, remove_illegal_without_norm
+from rlcard.agents.tractor_rule_agent import TractorRuleAgent
 
 Transition = namedtuple('Transition', ['state', 'action', 'reward', 'next_state', 'done'])
 
@@ -52,7 +53,8 @@ class DQNAgent(object):
                  state_shape=None,
                  train_every=1,
                  mlp_layers=None,
-                 learning_rate=0.00005):
+                 learning_rate=0.00005,
+                 use_rule_policy=False):
 
         '''
         Q-Learning algorithm for off-policy TD control using Function Approximation.
@@ -90,6 +92,7 @@ class DQNAgent(object):
         self.batch_size = batch_size
         self.action_num = action_num
         self.train_every = train_every
+        self.use_rule_policy = use_rule_policy
 
         # Total timesteps
         self.total_t = 0
@@ -134,9 +137,13 @@ class DQNAgent(object):
         Returns:
             action (int): an action id
         '''
-        A = self.predict(state['obs'])
-        A = remove_illegal(A, state['legal_actions'])
-        action = np.random.choice(np.arange(len(A)), p=A)
+        if self.use_rule_policy:
+            action = TractorRuleAgent.step(state)
+        else:
+            # A = self.predict(state['obs'])
+            A = self.predict(state)
+            
+            action = np.random.choice(np.arange(len(A)), p=A)
         return action
 
     def eval_step(self, state):
@@ -166,10 +173,16 @@ class DQNAgent(object):
             q_values (numpy.array): a 1-d array where each entry represents a Q value
         '''
         epsilon = self.epsilons[min(self.total_t, self.epsilon_decay_steps-1)]
-        A = np.ones(self.action_num, dtype=float) * epsilon / self.action_num
-        q_values = self.q_estimator.predict(self.sess, np.expand_dims(state, 0))[0]
+        # A = np.ones(self.action_num, dtype=float) * epsilon / self.action_num
+        A = np.ones(self.action_num, dtype=float) * epsilon / len(state['legal_actions'])
+
+        q_values = self.q_estimator.predict(self.sess, np.expand_dims(state['obs'], 0))[0]
+        q_values = remove_illegal(np.exp(q_values), state['legal_actions'])
+
         best_action = np.argmax(q_values)
         A[best_action] += (1.0 - epsilon)
+        
+        A = remove_illegal(A, state['legal_actions'])
         return A
 
     def train(self):
@@ -179,12 +192,23 @@ class DQNAgent(object):
             loss (float): The loss of the current batch.
         '''
         state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.memory.sample()
-        # Calculate q values and targets (Double DQN)
+        # # Calculate q values and targets (Double DQN)
         q_values_next = self.q_estimator.predict(self.sess, next_state_batch)
         best_actions = np.argmax(q_values_next, axis=1)
         q_values_next_target = self.target_estimator.predict(self.sess, next_state_batch)
         target_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
             self.discount_factor * q_values_next_target[np.arange(self.batch_size), best_actions]
+
+        # Calculate q values and targets (DQN)
+        # q_values_next_target = self.target_estimator.predict(self.sess, next_state_batch)
+        # next_best_actions = np.argmax(q_values_next_target, axis=1)
+        # target_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
+        #     self.discount_factor * q_values_next_target[np.arange(self.batch_size), next_best_actions]
+
+        # q_values = self.q_estimator.predict(self.sess, state_batch)
+        # print(target_batch)
+        # print([round(q_values[i][action_batch[i]],1) for i in range(len(action_batch))])
+        # print('--------------------------------------------------------------')
 
         # Perform gradient descent update
         state_batch = np.array(state_batch)
