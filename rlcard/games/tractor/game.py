@@ -44,7 +44,7 @@ class TractorGame(object):
         player = self.players[player_id]
         others_hands = self._get_others_current_hand(player)
         actions = self.judger.playable_cards[player_id]
-        state = player.get_state(self.round.public, others_hands, actions)
+        state = player.get_state(self.round.public, others_hands, self.round.trump, actions)
         self.state = state
 
         return state, player_id
@@ -82,7 +82,7 @@ class TractorGame(object):
             actions = None
         else:
             actions = player.available_actions(self.round.first_player, self.judger, self.round)
-        state = player.get_state(self.round.public, others_hands, actions)
+        state = player.get_state(self.round.public, others_hands, self.round.trump, actions)
 
         return state
 

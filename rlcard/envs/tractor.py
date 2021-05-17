@@ -18,7 +18,8 @@ class TractorEnv(Env):
         self.game = Game()
         super().__init__(config)
         # self.state_shape = [3, 3, 54]
-        self.state_shape = [5, 3, 54]
+        # self.state_shape = [5, 3, 54]
+        self.state_shape = [7, 3, 54]
 
     def run(self, is_training=False, debug=False):
         '''
@@ -55,7 +56,7 @@ class TractorEnv(Env):
                 if debug and player_id == 0:
                     print(','.join(self.game.players[player_id].current_hand))
                     print(ACTION_LIST[action])
-                    probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -100}
+                    probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -100 and prob[i] != 0}
                     probs = {k: round(v, 4) for k, v in probs.items()}
                     probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
                     print(probs)
@@ -111,20 +112,35 @@ class TractorEnv(Env):
                     # down-player possible hand
         '''
         # obs = np.zeros((3, 3, 54), dtype=int)
-        obs = np.zeros((5, 3, 54), dtype=int)
-        # for index in range(3):
-        for index in range(5):
+        # obs = np.zeros((5, 3, 54), dtype=int)
+        obs = np.zeros((7, 3, 54), dtype=int)
+        
+        # for index in range(5):
+        for index in range(7):
             obs[index][0] = np.ones(54, dtype=int)
         encode_cards(obs[0], state['current_hand'])
-        encode_cards(obs[1], state['others_hand'][0])
-        encode_cards(obs[2], state['others_hand'][1])
-        encode_cards(obs[3], state['others_hand'][2])
+
+        # open play
+        # encode_cards(obs[1], state['others_hand'][0])
+        # encode_cards(obs[2], state['others_hand'][1])
+        # encode_cards(obs[3], state['others_hand'][2])
         
-        current_round = [x for x in state['current_round'] if x != None]
-        if (len(current_round) > 0):
-            current_round = functools.reduce(lambda z,y : z + y, current_round)
-            # encode_cards(obs[2], current_round)
-            encode_cards(obs[4], current_round)
+        # "guess" play - real scenario
+        encode_cards(obs[1], state['guessed_others_hand'][0])
+        encode_cards(obs[2], state['guessed_others_hand'][1])
+        encode_cards(obs[3], state['guessed_others_hand'][2])
+
+        # union all cards in curent round as feature
+        # current_round = [x for x in state['current_round'] if x != None]
+        # if (len(current_round) > 0):
+        #     current_round = functools.reduce(lambda z,y : z + y, current_round)
+        #     encode_cards(obs[4], current_round)
+
+        # separatedly provide current round cards from each player
+        for i in range(3):
+            if state['offseted_current_round'][i] != None:
+                encode_cards(obs[i+4], state['offseted_current_round'][i])
+
         
         # obs[5][0][0] = state['score'][0]
         # obs[5][0][1] = state['score'][1]

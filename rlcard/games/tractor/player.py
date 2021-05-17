@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 ''' Implement Tractor Player class
 '''
+import functools
+from rlcard.games.tractor.utils import hand2type
 from rlcard.games.tractor import Dealer, Judger
 from rlcard.games.tractor.utils import get_valid_cards, is_same_suit, tractor_sort_card
 
@@ -22,22 +24,21 @@ class TractorPlayer(object):
         # and restore cards back to self._current_hand when play_back()
         self._recorded_played_cards = []
 
-    def get_state(self, public, others_hands, actions):
+    def get_state(self, public, others_hands, trump, actions):
         state = {}
-        # state['deck'] = public['deck']
         # state['banker_cards'] = public['banker_cards']
         # state['banker_id'] = public['banker_id']
-        # state['trace'] = public['trace'].copy()
-        # state['self'] = self.player_id
-        # state['initial_hand'] = self.initial_hand
         state['current_hand'] = self.current_hand
         state['others_hand'] = others_hands
         state['current_round'] = public['current_round'].copy()
+        state['offseted_current_round'] = self.get_offseted_current_round(public['current_round'])
         state['current_player_id'] = public['current_player_id']
         state['first_player_id'] = public['first_player_id']
         state['greater_player_id'] = public['greater_player_id']
+        state['guessed_others_hand'] = self.guess_othershand(public['suit_avail'], public['remaining_cards'], trump)
         state['score'] = public['score']
         state['actions'] = actions
+
         return state
 
     def available_actions(self, first_player=None, judger=None, game_round=None):
@@ -155,4 +156,31 @@ class TractorPlayer(object):
                 return (self, self.played_cards)
             else:
                 return (greater_player, self.played_cards)
-        
+    
+    def get_offseted_current_round(self, current_round):
+        offseted_current_round = [None, None, None]
+        player_down = (self.player_id + 1) % 4
+        player_front = (self.player_id + 2) % 4
+        player_up = (self.player_id + 3) % 4
+        offseted_current_round[0] = current_round[player_down]
+        offseted_current_round[1] = current_round[player_front]
+        offseted_current_round[2] = current_round[player_up]
+        return offseted_current_round
+
+    def guess_othershand(self, suit_avail, remaining_cards, trump):
+        othershand = []
+
+        cards = remaining_cards.copy()
+        for card in self.current_hand:
+            cards.remove(card)
+
+        player_ids =  [(self.player_id + 1) % 4, (self.player_id + 2) % 4, (self.player_id + 3) % 4]
+        for player_id in player_ids:
+            available_cards = []
+            for card in cards:
+                if suit_avail[player_id][hand2type([card], trump) - 10]:
+                    available_cards.append(card)
+            # available_cards.sort(key=functools.cmp_to_key(tractor_sort_card))
+            othershand.append(available_cards)
+
+        return othershand

@@ -65,10 +65,6 @@ class TractorJudger(object):
         for card in current_hand:
             cards_dict[card] += 1
 
-        # cards_count = np.array([cards_dict[k] for k in CARD_RANK_STR])
-        # non_zero_indexes = np.argwhere(cards_count > 0)
-        # more_than_1_indexes = np.argwhere(cards_count > 1)
-
         non_zero_indexes = []
         more_than_1_indexes = []
         for i in range(len(CARD_RANK_STR)):
@@ -100,18 +96,21 @@ class TractorJudger(object):
                ])
 
         # Tractor type 2 - 2H2H2S2S, 2C2C2S2S, 2D2D2S2S
+        # TODO: 无主这个type不成立
         if cards_dict['2S'] > 1:
             for second_card in ['2H', '2C', '2D']:
                 if cards_dict[second_card] > 1:
                     playable_cards.append([second_card, second_card, '2S', '2S'])
 
         # Tractor type 3 - ASAS2H2H, ASAS2C2C, ASAS2D2D
+        # TODO: 无主这个type不成立
         if cards_dict['AS'] > 1:
             for second_card in ['2H', '2C', '2D']:
                 if cards_dict[second_card] > 1:
                     playable_cards.append(['AS', 'AS', second_card, second_card])
 
         # Tractor type 4 - 2S2SBJBJ
+        # TODO: 无主要加上 2H2HBJBJ, 2C2CBJBJ, 2D2DBJBJ
         if (cards_dict['2S'] > 1 and cards_dict['BJ'] > 1):
             playable_cards.append(['2S', '2S', 'BJ', 'BJ'])
 

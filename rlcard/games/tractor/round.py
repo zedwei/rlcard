@@ -6,7 +6,7 @@ import numpy as np
 import functools
 
 from rlcard.games.tractor import Dealer
-from rlcard.games.tractor.utils import CARD_RANK_STR, CARD_SCORE
+from rlcard.games.tractor.utils import CARD_RANK_STR, CARD_SCORE, is_same_suit, hand2type
 
 class TractorRound(object):
     ''' Round stores the id the ongoing round and can call other Classes' functions to keep the game running
@@ -41,6 +41,11 @@ class TractorRound(object):
         self.first_player = self.current_player
         self.greater_player = self.current_player
 
+        self.suit_avail = [[True, True, True, True, True], [True, True, True, True, True], [True, True, True, True, True], [True, True, True, True, True]]
+        self.remaining_cards = []
+        self.remaining_cards.extend(CARD_RANK_STR)
+        self.remaining_cards.extend(CARD_RANK_STR)
+
         self.public = {'deck': self.dealer.deck[0:108],
                     #    'banker_cards': self.dealer.deck[100:108],
                        'banker_id': self.banker_id, 
@@ -51,7 +56,9 @@ class TractorRound(object):
                        'current_round': self.current_round,
                        'current_player_id': self.current_player.player_id,
                        'first_player_id': self.first_player.player_id,
-                       'greater_player_id': self.greater_player.player_id}
+                       'greater_player_id': self.greater_player.player_id,
+                       'suit_avail': self.suit_avail,
+                       'remaining_cards': self.remaining_cards}
 
     def proceed_round(self, player, action, judger):
         ''' Call other Classes's functions to keep one round running
@@ -69,6 +76,17 @@ class TractorRound(object):
 
         self.trace.append((player.player_id, played_cards))
         self.current_round[player.player_id] = played_cards
+
+        # update the overall remaining cards list
+        for card in played_cards:
+            self.remaining_cards.remove(card)
+
+        # update missing suit info of the current player
+        if (self.played_player_in_round != 0):
+            if not is_same_suit(self.current_round[self.first_player.player_id][0], played_cards[-1], self.trump):
+                missing_suit = hand2type([self.current_round[self.first_player.player_id][0]], self.trump) - 10
+                self.suit_avail[player.player_id][missing_suit] = False
+
         self.played_player_in_round += 1
 
         end_of_game = False
@@ -76,7 +94,7 @@ class TractorRound(object):
             # current round isn't ended
             next_id = (player.player_id + 1) % 4
         else:
-            # current round ends
+            # end of current round
             # calculate score in current round
             # score = 1.0 * self.calc_score_in_round() / 10
             score = self.calc_score_in_round()

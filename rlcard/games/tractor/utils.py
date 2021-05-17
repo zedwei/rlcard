@@ -209,8 +209,14 @@ class MovingAvg():
     
     def append(self, element):
         if (len(self.arr) == self.m_len):
-            self.arr.pop()
+            self.arr.pop(0)
         self.arr.append(element)
     
     def get(self):
         return float(sum(self.arr)) / max(len(self.arr), 1)
+
+    def get_latest(self):
+        return self.arr[-1] if len(self.arr)>0 else 0
+
+    def get_first(self):
+        return self.arr[0] if len(self.arr)>0 else 0

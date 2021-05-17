@@ -173,15 +173,20 @@ class DQNAgent(object):
             q_values (numpy.array): a 1-d array where each entry represents a Q value
         '''
         epsilon = self.epsilons[min(self.total_t, self.epsilon_decay_steps-1)]
-        # A = np.ones(self.action_num, dtype=float) * epsilon / self.action_num
         A = np.ones(self.action_num, dtype=float) * epsilon / len(state['legal_actions'])
 
         q_values = self.q_estimator.predict(self.sess, np.expand_dims(state['obs'], 0))[0]
-        q_values = remove_illegal(np.exp(q_values), state['legal_actions'])
 
-        best_action = np.argmax(q_values)
+        best_action = state['legal_actions'][0]
+        best_action_q_value = q_values[best_action]
+        for action in state['legal_actions']:
+            if q_values[action] > best_action_q_value:
+                best_action = action
+                best_action_q_value = q_values[action]
+
         A[best_action] += (1.0 - epsilon)
         
+        # TODO: no need to normalize in this function
         A = remove_illegal(A, state['legal_actions'])
         return A
 
@@ -204,11 +209,6 @@ class DQNAgent(object):
         # next_best_actions = np.argmax(q_values_next_target, axis=1)
         # target_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
         #     self.discount_factor * q_values_next_target[np.arange(self.batch_size), next_best_actions]
-
-        # q_values = self.q_estimator.predict(self.sess, state_batch)
-        # print(target_batch)
-        # print([round(q_values[i][action_batch[i]],1) for i in range(len(action_batch))])
-        # print('--------------------------------------------------------------')
 
         # Perform gradient descent update
         state_batch = np.array(state_batch)
@@ -294,8 +294,8 @@ class Estimator():
         batch_size = tf.shape(self.X_pl)[0]
 
         # Batch Normalization
-        X = tf.layers.batch_normalization(self.X_pl, training=self.is_train)
-        # X = self.X_pl
+        # X = tf.layers.batch_normalization(self.X_pl, training=self.is_train)
+        X = self.X_pl
 
         # Fully connected layers
         fc = tf.contrib.layers.flatten(X)

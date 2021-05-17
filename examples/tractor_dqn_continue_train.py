@@ -13,6 +13,8 @@ from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg, ACTION_LIST
 
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
+
 # Set a global seed
 set_global_seed(0)
 
@@ -23,11 +25,11 @@ eval_env = rlcard.make('tractor', config={'seed': 0})
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 2000
 evaluate_num = 1000
-# episode_num = 100000
-episode_num = 10000
+# episode_num = 500000
+episode_num = 100000
 
 # The intial memory size
-memory_init_size = 1000
+memory_init_size = 10000
 
 # Train the agent every X steps
 train_every = 64
@@ -42,8 +44,6 @@ config.gpu_options.allow_growth = True
 agents = []
 
 with tf.Session(config=config) as sess:
-# with tf.Session() as sess:
-
     # Initialize a global step
     global_step = tf.Variable(0, name='global_step', trainable=False)
 
@@ -59,10 +59,11 @@ with tf.Session(config=config) as sess:
                         replay_memory_size=100000,
                         update_target_estimator_every=500,
                         discount_factor=0.5,
-                        epsilon_start=1,
+                        # epsilon_start=0.1,
+                        epsilon_start=0.2,
                         epsilon_end=0.1,
-                        epsilon_decay_steps=100000,
-                        # epsilon_decay_steps=400000,
+                        # epsilon_decay_steps=100000,
+                        epsilon_decay_steps=400000,
                         batch_size=256,
                         learning_rate=0.00002,
                         use_rule_policy=False
@@ -84,7 +85,7 @@ with tf.Session(config=config) as sess:
     # env.set_agents([agent, rule_agent, agent, rule_agent])
     # eval_env.set_agents([agent, rule_agent, agent, rule_agent])
 
-    # # 4 dqn agent with single brain
+    # 4 dqn agent with single brain
     env.set_agents([agents[0], agents[0], agents[0], agents[0]])
     eval_env.set_agents([agents[0], rule_agent, agents[0], rule_agent])
 
@@ -102,17 +103,13 @@ with tf.Session(config=config) as sess:
     m_avg = MovingAvg(100)
     payoff_avg = MovingAvg(100)
 
-    # Store a test state to track Q value
-    # state, player_id = env.reset()
-    # predefined_hands = [['TD', 'AD'],
-    #                     ['KS', 'AS'],
-    #                     ['TD', '3D'],
-    #                     ['3D', '4D']]
-    # state = env.reset_predefine_state(predefined_hands)
-    # for i in range(4):
-    #     print(env.game.players[i].current_hand)
+    # load the pre-trained model
+    check_point_path = os.path.join(TRACTOR_PATH, 'dqn_10kR_10kST')
+    saver = tf.train.Saver()
+    saver.restore(sess, tf.train.latest_checkpoint(check_point_path))
+    graph = tf.get_default_graph()
+    print('INFO: Loaded model from {}'.format(check_point_path))
 
-    
     t = trange(episode_num, desc='rl-loss:', leave=True)
     for episode in t:
         # Generate data from the environment
@@ -122,7 +119,7 @@ with tf.Session(config=config) as sess:
         # Feed transitions into agent memory, and train the agent
         for player in [0, 1, 2, 3]:
             for ts in trajectories[player]:
-                rl_loss = env.agents[player].feed(ts)
+                rl_loss = agents[player % 1].feed(ts)
                 if rl_loss != None:
                     m_avg.append(rl_loss)
 
@@ -148,7 +145,7 @@ with tf.Session(config=config) as sess:
     logger.plot('DQN')
     
     # Save model
-    save_dir = 'models/tractor_dqn'
+    save_dir = 'models/tractor_dqn_continue_train'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     saver = tf.train.Saver()

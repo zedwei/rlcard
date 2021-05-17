@@ -23,6 +23,7 @@ import random
 import enum
 import numpy as np
 import tensorflow as tf
+import sys
 
 from rlcard.agents.dqn_agent import DQNAgent
 from rlcard.utils.utils import remove_illegal
@@ -189,9 +190,13 @@ class NFSPAgent(object):
         obs = state['obs']
         legal_actions = state['legal_actions']
         if self._mode == MODE.best_response:
-            probs = self._rl_agent.predict(obs)
+            # probs = self._rl_agent.predict(obs)
+            probs = self._rl_agent.predict(state)
 
-            one_hot = np.eye(len(probs))[np.argmax(probs)]
+            # one_hot = np.eye(len(probs))[np.argmax(probs)]
+            one_hot = np.zeros(len(probs))
+            one_hot[np.argmax(probs)] = 1
+
             self._add_transition(obs, one_hot)
 
         elif self._mode == MODE.average_policy:
@@ -266,10 +271,18 @@ class NFSPAgent(object):
             state (numpy.array): The state.
             probs (numpy.array): The probabilities of each action.
         '''
+
+        # transition = Transition(
+        #         info_state=state,
+        #         action_probs=probs)
+        # self._reservoir_buffer.add(transition)
+
         transition = Transition(
                 info_state=state,
                 action_probs=probs)
         self._reservoir_buffer.add(transition)
+        
+        # self._reservoir_buffer.add((state, probs))
 
     def train_sl(self):
         ''' Compute the loss on sampled transitions and perform a avg-network update.
@@ -287,6 +300,8 @@ class NFSPAgent(object):
         transitions = self._reservoir_buffer.sample(self._batch_size)
         info_states = [t.info_state for t in transitions]
         action_probs = [t.action_probs for t in transitions]
+        # info_states = [t[0] for t in transitions]
+        # action_probs = [t[1] for t in transitions]
 
         loss, _ = self._sess.run(
                 [self._loss, self._learn_step],
@@ -295,8 +310,13 @@ class NFSPAgent(object):
                         self._action_probs_ph: action_probs,
                         self.is_train: True,
                 })
-
         return loss
+
+    def get_reservoir_buffer_size(self):
+        return len(self._reservoir_buffer)
+
+    def get_rl_epsilon(self):
+        return self._rl_agent.epsilons[min(self._rl_agent.total_t, self._rl_agent.epsilon_decay_steps-1)]
 
 class ReservoirBuffer(object):
     ''' Allows uniform sampling over a stream of data.
@@ -326,6 +346,7 @@ class ReservoirBuffer(object):
             idx = np.random.randint(0, self._add_calls + 1)
             if idx < self._reservoir_buffer_capacity:
                 self._data[idx] = element
+                ## TODO: monitor if the previous data got disposed
         self._add_calls += 1
 
     def sample(self, num_samples):

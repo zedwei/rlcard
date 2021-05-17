@@ -8,8 +8,8 @@ from rlcard.models.model import Model
 from rlcard.agents import DQNAgent
 
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractor')
-SIMPLE_TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\simple_tractor')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
+SIMPLE_TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
 
 class TractorNFSPModel(Model):
     ''' A pretrained model on Tractor with NFSP
@@ -40,28 +40,19 @@ class TractorNFSPModel(Model):
             #                       q_mlp_layers=[512,1024,2048,1024,512])
             #     self.nfsp_agents.append(agent)
 
-            for i in range(2):
+            for i in range(1):
                 agent = NFSPAgent(self.sess,
                                 scope='nfsp' + str(i),
                                 action_num=env.action_num,
                                 state_shape=env.state_shape,
-                                hidden_layers_sizes=[512,1024,512],
-                                q_mlp_layers=[512,1024,512],
+                                hidden_layers_sizes=[2048,2048],
+                                q_mlp_layers=[2048,2048],
                                 # evaluate_with='average_policy')
                                 evaluate_with='best_response')
 
                 self.nfsp_agents.append(agent)
 
-            # for i in range(1):
-            #     agent = NFSPAgent(self.sess,
-            #                     scope='nfsp', # + str(i),
-            #                     action_num=env.action_num,
-            #                     state_shape=env.state_shape,
-            #                     hidden_layers_sizes=[512,1024,2048,1024,512],
-            #                     q_mlp_layers=[512,1024,2048,1024,512])
-            #     self.nfsp_agents.append(agent)
-
-        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_nfsp_rule_500k_iter')
+        check_point_path = os.path.join(TRACTOR_PATH, 'nfsp_100k_selftrain_0.99discount')
 
         with self.sess.as_default():
             with self.graph.as_default():
@@ -108,7 +99,7 @@ class TractorDQNModel(Model):
                      mlp_layers=[2048,2048],
                      replay_memory_size=100000,
                      update_target_estimator_every=100,
-                     discount_factor=0.99,
+                     discount_factor=0.5,
                      epsilon_start=1,
                      epsilon_end=0.1,
                      epsilon_decay_steps=100000,
@@ -118,7 +109,7 @@ class TractorDQNModel(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(SIMPLE_TRACTOR_PATH, 'tractor_dqn_100k_iters')
+        check_point_path = os.path.join(TRACTOR_PATH, 'dqn_10kR_10kST_100kST')
 
         with self.sess.as_default():
             with self.graph.as_default():
