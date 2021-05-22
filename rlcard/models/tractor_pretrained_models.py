@@ -52,7 +52,7 @@ class TractorNFSPModel(Model):
 
                 self.nfsp_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, 'nfsp_100k_selftrain_0.99discount')
+        check_point_path = os.path.join(TRACTOR_PATH, 'nfsp_continue_350k_0.99')
 
         with self.sess.as_default():
             with self.graph.as_default():
