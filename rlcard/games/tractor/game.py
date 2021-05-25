@@ -34,7 +34,7 @@ class TractorGame(object):
         self.round.initiate(self.players, predefined_hands)
 
         # initialize judger
-        self.judger = Judger(self.players, self.np_random)
+        self.judger = Judger(self.players, self.round.trump, self.np_random)
 
         for player in self.players:
             player.judger = self.judger
@@ -44,7 +44,7 @@ class TractorGame(object):
         player = self.players[player_id]
         others_hands = self._get_others_current_hand(player)
         actions = self.judger.playable_cards[player_id]
-        state = player.get_state(self.round.public, others_hands, self.round.trump, actions)
+        state = player.get_state(self.round.public, others_hands, actions)
         self.state = state
 
         return state, player_id
@@ -81,8 +81,8 @@ class TractorGame(object):
         if self.is_over():
             actions = None
         else:
-            actions = player.available_actions(self.round.first_player, self.judger, self.round)
-        state = player.get_state(self.round.public, others_hands, self.round.trump, actions)
+            actions = player.available_actions(self.round.first_player, self.judger)
+        state = player.get_state(self.round.public, others_hands, actions)
 
         return state
 

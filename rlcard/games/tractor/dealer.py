@@ -3,7 +3,7 @@
 '''
 import functools
 
-from rlcard.games.tractor.utils import tractor_sort_card, CARD_RANK_STR
+from rlcard.games.tractor.utils import tractor_sort_card, CARD_STR
 
 
 class TractorDealer(object):
@@ -15,18 +15,21 @@ class TractorDealer(object):
 
     deck = []
 
-    def __init__(self, np_random):
+    def __init__(self, trump, np_random):
         ''' The dealer should have all the cards at the beginning of a game
         '''
         self.np_random = np_random
 
+        # two decks of cards
         self.deck = []
-        self.deck.extend(CARD_RANK_STR)
-        self.deck.extend(CARD_RANK_STR)
-        
-        # cards = ['3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH']
-        # self.deck.extend(cards)
-        # self.deck.extend(cards)
+        self.deck.extend(CARD_STR)
+        self.deck.extend(CARD_STR)
+
+        for i in range(len(self.deck)):
+            if self.deck[i][0] == trump[0]:
+                self.deck[i] = 'N' + self.deck[i][1]
+            if self.deck[i][1] == trump[1]:
+                self.deck[i] = self.deck[i][0] + 'J'
 
         self.banker = None
 
@@ -42,13 +45,14 @@ class TractorDealer(object):
             player_id: the id of the player to be dealt cards
             num: number of cards to be dealt
         '''
-        hand_num = len(self.deck) // 4
+        # exclude 8 banker cards
+        hand_num = (len(self.deck) - 8) // 4
 
         for index, player in enumerate(players):
             current_hand = self.deck[index * hand_num : (index+1) * hand_num]
             current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
             player.current_hand = current_hand
-            player.initial_hand = current_hand
+            player.initial_hand = current_hand.copy()
     
     def deal_cards_and_determine_role(self, players, predefined_hands=None):
         ''' Deal cards and determine banker according to players' hand
@@ -69,10 +73,12 @@ class TractorDealer(object):
                 current_hand.sort(key=functools.cmp_to_key(tractor_sort_card))
                 players[player_id].current_hand = current_hand
 
+        # Assume player[0] is always the banker
+        # TODO: if later on multiple agents are trained, randomization needs to be added here
         players[0].role = 'banker'
         players[1].role = 'opponent'
         players[2].role = 'declarer'
         players[3].role = 'opponent'
-
         self.banker = players[0]
+
         return self.banker.player_id

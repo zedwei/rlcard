@@ -9,7 +9,7 @@ from tqdm import tqdm, trange
 import rlcard
 from rlcard.agents import DQNAgent
 from rlcard.agents import RandomAgent, TractorRuleAgent
-from rlcard.utils import set_global_seed, tournament
+from rlcard.utils import set_global_seed
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg, ACTION_LIST
 
@@ -21,10 +21,10 @@ env = rlcard.make('tractor', config={'seed': 0})
 eval_env = rlcard.make('tractor', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 2000
+evaluate_every = 5000
 evaluate_num = 1000
 # episode_num = 100000
-episode_num = 10000
+episode_num = 100000
 
 # The intial memory size
 memory_init_size = 1000
@@ -33,7 +33,9 @@ memory_init_size = 1000
 train_every = 64
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/tractor_dqn_result/'
+save_dir = 'models/tractor_dqn'
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 
 # Mitigation for gpu memory issue
 config = tf.ConfigProto()
@@ -58,11 +60,11 @@ with tf.Session(config=config) as sess:
                         mlp_layers=[2048,2048],
                         replay_memory_size=100000,
                         update_target_estimator_every=500,
-                        discount_factor=0.5,
+                        discount_factor=0.99,
                         epsilon_start=1,
                         epsilon_end=0.1,
-                        epsilon_decay_steps=100000,
-                        # epsilon_decay_steps=400000,
+                        # epsilon_decay_steps=100000,
+                        epsilon_decay_steps=400000,
                         batch_size=256,
                         learning_rate=0.00002,
                         use_rule_policy=False
@@ -96,7 +98,7 @@ with tf.Session(config=config) as sess:
     sess.run(tf.global_variables_initializer())
 
     # Init a Logger to plot the learning curve
-    logger = Logger(log_dir)
+    logger = Logger(save_dir)
 
     # Init moving average calculator
     m_avg = MovingAvg(100)
@@ -112,7 +114,9 @@ with tf.Session(config=config) as sess:
     # for i in range(4):
     #     print(env.game.players[i].current_hand)
 
-    
+    # Save model
+    saver = tf.train.Saver()
+
     t = trange(episode_num, desc='rl-loss:', leave=True)
     for episode in t:
         # Generate data from the environment
@@ -120,9 +124,9 @@ with tf.Session(config=config) as sess:
         payoff_avg.append(payoffs[0])
 
         # Feed transitions into agent memory, and train the agent
-        for player in [0, 1, 2, 3]:
-            for ts in trajectories[player]:
-                rl_loss = env.agents[player].feed(ts)
+        for agent_id in [0, 1, 2, 3]:
+            for ts in trajectories[agent_id]:
+                rl_loss = env.agents[agent_id].feed(ts)
                 if rl_loss != None:
                     m_avg.append(rl_loss)
 
@@ -140,17 +144,15 @@ with tf.Session(config=config) as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == evaluate_every - 1:
             logger.log_performance(env.timestep, tournament_tractor(eval_env, evaluate_num)[0])
+            logger.log("rl loss: {}, payoff: {}, epsilon: {}".format(
+                round(m_avg.get(), 2), 
+                round(payoff_avg.get(), 2), 
+                round(agent.epsilons[min(agent.total_t, agent.epsilon_decay_steps-1)], 2)
+            ))
+            saver.save(sess, os.path.join(save_dir, 'model'))
 
     # Close files in the logger
     logger.close_files()
 
     # Plot the learning curve
     logger.plot('DQN')
-    
-    # Save model
-    save_dir = 'models/tractor_dqn'
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    saver = tf.train.Saver()
-    saver.save(sess, os.path.join(save_dir, 'model'))
-    

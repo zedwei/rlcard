@@ -4,9 +4,11 @@
 
 import numpy as np
 import functools
+import random
 
 from rlcard.games.tractor import Dealer
-from rlcard.games.tractor.utils import CARD_RANK_STR, CARD_SCORE, is_same_suit, hand2type
+from rlcard.games.tractor.utils import TRUMP_CANDIDATE_STR
+from rlcard.games.tractor.utils import is_same_suit, calc_score, get_suit
 
 class TractorRound(object):
     ''' Round stores the id the ongoing round and can call other Classes' functions to keep the game running
@@ -21,20 +23,26 @@ class TractorRound(object):
         self.greater_player = None
         self.first_player = None
         self.current_player = None
-        self.dealer = Dealer(self.np_random)
-        # self.deck_str = cards2str(self.dealer.deck)
-        self.trump = '2S' # either '2S' or 'BJ' for simplicity
+ 
         self.score = [0, 0]
         self.score_trace = []
         self.current_round = [None, None, None, None]
         self.played_player_in_round = 0
 
-    def initiate(self, players, predefined_hands=None):
+    def initiate(self, players, predefined_hands=None, predefined_trump=None):
         ''' Call dealer to deal cards and determine banker.
 
         Args:
             players (list): list of DoudizhuPlayer objects
         '''
+
+       # self.trump = '2S'
+        if predefined_trump != None:
+            self.trump = predefined_trump
+        else:
+            self.trump = random.choice(TRUMP_CANDIDATE_STR)
+        self.dealer = Dealer(self.trump, self.np_random)
+
         banker_id = self.dealer.deal_cards_and_determine_role(players, predefined_hands)
         self.banker_id = banker_id
         self.current_player = players[banker_id]
@@ -43,13 +51,11 @@ class TractorRound(object):
 
         self.suit_avail = [[True, True, True, True, True], [True, True, True, True, True], [True, True, True, True, True], [True, True, True, True, True]]
         self.remaining_cards = []
-        self.remaining_cards.extend(CARD_RANK_STR)
-        self.remaining_cards.extend(CARD_RANK_STR)
+        self.remaining_cards.extend(self.dealer.deck)
 
-        self.public = {'deck': self.dealer.deck[0:108],
-                    #    'banker_cards': self.dealer.deck[100:108],
-                       'banker_id': self.banker_id, 
-                       'trump': self.trump,
+        self.public = {'trump': self.trump,
+                       'banker_id': self.banker_id,
+                       'banker_cards': self.dealer.deck[100:108],
                        'score': self.score, 
                        'score_trace' : self.score_trace,
                        'trace': self.trace, 
@@ -79,12 +85,13 @@ class TractorRound(object):
 
         # update the overall remaining cards list
         for card in played_cards:
-            self.remaining_cards.remove(card)
+            self.remaining_cards.remove(
+                card)
 
         # update missing suit info of the current player
         if (self.played_player_in_round != 0):
-            if not is_same_suit(self.current_round[self.first_player.player_id][0], played_cards[-1], self.trump):
-                missing_suit = hand2type([self.current_round[self.first_player.player_id][0]], self.trump) - 10
+            if not is_same_suit(self.current_round[self.first_player.player_id][0], played_cards[-1]):
+                missing_suit = get_suit(self.current_round[self.first_player.player_id][0])
                 self.suit_avail[player.player_id][missing_suit] = False
 
         self.played_player_in_round += 1
@@ -95,9 +102,18 @@ class TractorRound(object):
             next_id = (player.player_id + 1) % 4
         else:
             # end of current round
+            
             # calculate score in current round
-            # score = 1.0 * self.calc_score_in_round() / 10
             score = self.calc_score_in_round()
+
+            # decide if it's end of the game
+            if len(player.current_hand) == 0:
+                end_of_game = True
+                # calculate score from banker
+                banker_score = calc_score(self.dealer.deck[100:108], self.trump)
+                banker_score = banker_score * (2 ** len(self.greater_player.played_cards))
+                score = score + banker_score
+
             self.score[self.greater_player.player_id % 2] += score
 
             # add delta score to score_trace
@@ -110,9 +126,6 @@ class TractorRound(object):
             next_id = self.greater_player.player_id
             self.reset(self.greater_player)
 
-            if len(player.current_hand) == 0:
-                end_of_game = True
-
         self.public['current_player_id'] = next_id
         self.public['first_player_id'] = self.first_player.player_id
         self.public['greater_player_id'] = self.greater_player.player_id
@@ -121,14 +134,11 @@ class TractorRound(object):
 
     def calc_score_in_round(self):
         cards = functools.reduce(lambda z,y : z + y, self.current_round)
-        scores = [CARD_SCORE[x] for x in cards if x in CARD_SCORE.keys()]
-        score_in_round = sum(scores)
-        return score_in_round
+        return calc_score(cards, self.trump)
 
     def reset(self, player):
         for i in range(4):
             self.current_round[i] = None
-        # self.current_round = [None, None, None, None]
         self.played_player_in_round = 0
         self.first_player = self.greater_player
         self.current_player = self.greater_player

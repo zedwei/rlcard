@@ -2,9 +2,8 @@
 ''' Implement Tractor Player class
 '''
 import functools
-from rlcard.games.tractor.utils import hand2type
 from rlcard.games.tractor import Dealer, Judger
-from rlcard.games.tractor.utils import get_valid_cards, is_same_suit, tractor_sort_card
+from rlcard.games.tractor.utils import get_valid_cards, is_same_suit, tractor_sort_card, get_suit
 
 class TractorPlayer(object):
     ''' Player stores cards in the player's hand, and can determine the actions can be made according to the rules
@@ -24,10 +23,8 @@ class TractorPlayer(object):
         # and restore cards back to self._current_hand when play_back()
         self._recorded_played_cards = []
 
-    def get_state(self, public, others_hands, trump, actions):
+    def get_state(self, public, others_hands, actions):
         state = {}
-        # state['banker_cards'] = public['banker_cards']
-        # state['banker_id'] = public['banker_id']
         state['current_hand'] = self.current_hand
         state['others_hand'] = others_hands
         state['current_round'] = public['current_round'].copy()
@@ -35,13 +32,14 @@ class TractorPlayer(object):
         state['current_player_id'] = public['current_player_id']
         state['first_player_id'] = public['first_player_id']
         state['greater_player_id'] = public['greater_player_id']
-        state['guessed_others_hand'] = self.guess_othershand(public['suit_avail'], public['remaining_cards'], trump)
+        state['guessed_others_hand'] = self.guess_othershand(public['suit_avail'], public['remaining_cards'], public['banker_id'], public['banker_cards'])
+        state['remaining_cards'] = self.guess_banker(public['remaining_cards'], public['banker_id'], public['banker_cards'])
         state['score'] = public['score']
         state['actions'] = actions
 
         return state
 
-    def available_actions(self, first_player=None, judger=None, game_round=None):
+    def available_actions(self, first_player=None, judger=None):
         ''' Get the actions can be made based on the rules
 
         Returns:
@@ -52,7 +50,7 @@ class TractorPlayer(object):
         if first_player == self:
             actions = playable_cards
         else:
-            actions = get_valid_cards(first_player, playable_cards, game_round.trump)
+            actions = get_valid_cards(first_player, playable_cards)
         return actions
 
     def play(self, action, first_player=None, greater_player=None, judger=None, trump=None):
@@ -75,8 +73,6 @@ class TractorPlayer(object):
                 # Current player MUST NOT have any card with the same suit according to how actions are picked
                 # Strategy: pick the 1st card in hand, and that card MUST NOT be the trump suit
 
-                # if (len(self.current_hand) == 0):
-                #     print(target_hand)
                 removed_cards.append(self.current_hand[0])
                 self.current_hand.remove(self.current_hand[0])
 
@@ -88,7 +84,7 @@ class TractorPlayer(object):
                 cards_to_remove = 2
                 for target_card in target_hand:
                     for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_card, remain_card, trump):
+                        if is_same_suit(target_card, remain_card):
                             removed_cards.append(self.current_hand[_])
                             self.current_hand.remove(self.current_hand[_])
                             cards_to_remove -= 1
@@ -111,7 +107,7 @@ class TractorPlayer(object):
                     if cards_to_remove == 0:
                         break
                     if len(cards) == 2:  # a pair
-                        if is_same_suit(target_hand[0], cards[0], trump): # same suit
+                        if is_same_suit(target_hand[0], cards[0]): # same suit
                             for cardstr in cards:
                                 for _, remain_card in enumerate(self.current_hand):
                                     if cardstr == remain_card:
@@ -123,7 +119,7 @@ class TractorPlayer(object):
                 # try to remove single with the same suit
                 for _ in range(cards_to_remove):
                     for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_hand[0], remain_card, trump):
+                        if is_same_suit(target_hand[0], remain_card):
                             removed_cards.append(self.current_hand[_])
                             self.current_hand.remove(self.current_hand[_])
                             cards_to_remove -= 1
@@ -167,20 +163,33 @@ class TractorPlayer(object):
         offseted_current_round[2] = current_round[player_up]
         return offseted_current_round
 
-    def guess_othershand(self, suit_avail, remaining_cards, trump):
+    def guess_othershand(self, suit_avail, remaining_cards, banker_id, banker_cards):
         othershand = []
 
         cards = remaining_cards.copy()
         for card in self.current_hand:
             cards.remove(card)
 
+        if self.player_id == banker_id:
+            for card in banker_cards:
+                cards.remove(card)
+
         player_ids =  [(self.player_id + 1) % 4, (self.player_id + 2) % 4, (self.player_id + 3) % 4]
         for player_id in player_ids:
             available_cards = []
             for card in cards:
-                if suit_avail[player_id][hand2type([card], trump) - 10]:
+                if suit_avail[player_id][get_suit(card)]:
                     available_cards.append(card)
             # available_cards.sort(key=functools.cmp_to_key(tractor_sort_card))
             othershand.append(available_cards)
 
         return othershand
+
+    def guess_banker(self, remaining_cards, banker_id, banker_cards):
+        if self.player_id == banker_id:
+            return banker_cards
+        else:
+            cards = remaining_cards.copy()
+            for card in self.current_hand:
+                cards.remove(card)
+            return cards

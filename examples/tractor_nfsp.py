@@ -9,7 +9,7 @@ from tqdm import tqdm, trange
 import rlcard
 from rlcard.agents import NFSPAgent
 from rlcard.agents import RandomAgent, TractorRuleAgent
-from rlcard.utils import set_global_seed, tournament
+from rlcard.utils import set_global_seed
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg
 
@@ -18,9 +18,9 @@ env = rlcard.make('tractor', config={'seed': 0})
 eval_env = rlcard.make('tractor', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 5000
+evaluate_every = 2000
 evaluate_num = 1000
-episode_num = 100000
+episode_num = 20000
 # episode_num = 10000
 
 
@@ -28,8 +28,7 @@ episode_num = 100000
 memory_init_size = 1000
 
 # Train the agent every X steps
-train_every = 6400000
-# train_every = 256
+train_every = 256
 
 # The paths for saving the logs and learning curves
 log_dir = './experiments/tractor_nfsp_result/'
@@ -56,8 +55,8 @@ with tf.Session(config=config) as sess:
                                action_num=env.action_num,
                                state_shape=env.state_shape,
                                hidden_layers_sizes=[2048, 2048],
-                            #    anticipatory_param=0.1,
-                               anticipatory_param=0.9,
+                               anticipatory_param=0.1,
+                            #    anticipatory_param=0.9, # why?
                                batch_size=256,
                                train_every = train_every,
                                rl_learning_rate=0.00002,
@@ -68,7 +67,8 @@ with tf.Session(config=config) as sess:
                                q_discount_factor=0.99,
                                q_epsilon_start=1,
                                q_epsilon_end=0.1,
-                               q_epsilon_decay_steps=400000,
+                            #    q_epsilon_decay_steps=400000,
+                               q_epsilon_decay_steps=100000,
                                q_batch_size=256,
                                q_train_every=train_every,
                                q_mlp_layers=[2048, 2048],
@@ -91,9 +91,14 @@ with tf.Session(config=config) as sess:
     sess.run(tf.global_variables_initializer())
 
     # Init a Logger to plot the learning curvefrom rlcard.agents.random_agent import RandomAgent
-
     logger = Logger(log_dir)
 
+    # Save model
+    save_dir = 'models/tractor_nfsp'
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    saver = tf.train.Saver()
+    
     t = trange(episode_num, desc='rl-loss:', leave=True)
 
     for episode in t:
@@ -126,7 +131,7 @@ with tf.Session(config=config) as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == evaluate_every - 1:
             logger.log_performance(env.timestep, tournament_tractor(eval_env, evaluate_num)[0])
-            # tqdm.write('INFO - Agent 0, episode {}, rl-loss: {}, sl-loss: {}'.format(episode, latest_rl_loss, latest_sl_loss))
+            saver.save(sess, os.path.join(save_dir, 'model'))
 
     # Close files in the logger
     logger.close_files()
@@ -134,10 +139,5 @@ with tf.Session(config=config) as sess:
     # Plot the learning curve
     logger.plot('NFSP')
     
-    # Save model
-    save_dir = 'models/tractor_nfsp'
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    saver = tf.train.Saver()
-    saver.save(sess, os.path.join(save_dir, 'model'))
+
     

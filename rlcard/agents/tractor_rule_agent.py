@@ -1,5 +1,5 @@
 import numpy as np
-from rlcard.games.tractor.utils import ACTION_LIST, CARD_RANK_DICT, CARD_RANK_STR, CARD_SCORE
+from rlcard.games.tractor.utils import ACTION_LIST, CARD_RANK_DICT, CARD_RANK_STR, calc_score
 
 class TractorRuleAgent(object):
     ''' A random agent. Random agents is for running toy examples on the card games
@@ -27,12 +27,13 @@ class TractorRuleAgent(object):
         # print(state)
         first_player_in_round = True
         has_score = False
-        for i in range(len(state['obs'][2][0])):
-            if state['obs'][2][0][i] == 0:
-                first_player_in_round = False
-                if CARD_RANK_STR[i] in CARD_SCORE:
-                    has_score = True
-                    break
+        for k in range(4, 7):
+            for i in range(len(state['obs'][k][0])):
+                if state['obs'][k][0][i] == 0:
+                    first_player_in_round = False
+                    if calc_score([CARD_RANK_STR[i]], state['trump']) > 0:
+                        has_score = True
+                        break
 
         if first_player_in_round or not has_score:
             return np.random.choice(state['legal_actions'])

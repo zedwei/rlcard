@@ -197,12 +197,15 @@ class DQNAgent(object):
             loss (float): The loss of the current batch.
         '''
         state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.memory.sample()
-        # # Calculate q values and targets (Double DQN)
+        # Calculate q values and targets (Double DQN)
         q_values_next = self.q_estimator.predict(self.sess, next_state_batch)
-        best_actions = np.argmax(q_values_next, axis=1)
+        
+        # TODO: filter legal actions
+        best_next_actions = np.argmax(q_values_next, axis=1)
+
         q_values_next_target = self.target_estimator.predict(self.sess, next_state_batch)
         target_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
-            self.discount_factor * q_values_next_target[np.arange(self.batch_size), best_actions]
+            self.discount_factor * q_values_next_target[np.arange(self.batch_size), best_next_actions]
 
         # Calculate q values and targets (DQN)
         # q_values_next_target = self.target_estimator.predict(self.sess, next_state_batch)

@@ -8,8 +8,7 @@ from rlcard.models.model import Model
 from rlcard.agents import DQNAgent
 
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
-SIMPLE_TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV3')
 
 class TractorNFSPModel(Model):
     ''' A pretrained model on Tractor with NFSP
@@ -79,7 +78,6 @@ class TractorDQNModel(Model):
         ''' Load pretrained model
         '''
         import tensorflow as tf
-        from rlcard.agents import NFSPAgent, RandomAgent
         self.graph = tf.Graph()
 
         # Mitigation for gpu memory issue
@@ -109,7 +107,7 @@ class TractorDQNModel(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, 'dqn_10kR_10kST_100kST')
+        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_100k')
 
         with self.sess.as_default():
             with self.graph.as_default():

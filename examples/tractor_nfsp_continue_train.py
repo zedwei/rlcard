@@ -13,7 +13,7 @@ from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV2')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV3')
 
 # Make environment
 env = rlcard.make('tractor', config={'seed': 0})
@@ -111,6 +111,12 @@ with tf.Session(config=config) as sess:
 
     graph = tf.get_default_graph()
 
+    # Save model
+    save_dir = 'models/tractor_nfsp_continue_train'
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    saver = tf.train.Saver()
+
     t = trange(episode_num, desc='rl-loss:', leave=True)
  
     for episode in t:
@@ -143,17 +149,13 @@ with tf.Session(config=config) as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == evaluate_every - 1:
             logger.log_performance(env.timestep, tournament_tractor(eval_env, evaluate_num)[0])
+            saver.save(sess, os.path.join(save_dir, 'model'))
 
     # Close files in the logger
     logger.close_files()
 
     # Plot the learning curve
     logger.plot('NFSP')
+  
     
-    # Save model
-    save_dir = 'models/tractor_nfsp_continue_train'
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    saver = tf.train.Saver()
-    saver.save(sess, os.path.join(save_dir, 'model'))
     

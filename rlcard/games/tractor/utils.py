@@ -5,40 +5,81 @@ from tqdm import tqdm
 
 from rlcard.core import Card
 
-CARD_RANK_STR = ['3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH',
-            '3C', '4C', '5C', '6C', '7C', '8C', '9C', 'TC', 'JC', 'QC', 'KC', 'AC',
-            '3D', '4D', '5D', '6D', '7D', '8D', '9D', 'TD', 'JD', 'QD', 'KD', 'AD',
-            '3S', '4S', '5S', '6S', '7S', '8S', '9S', 'TS', 'JS', 'QS', 'KS', 'AS',
-            '2H', '2C', '2D', '2S', 'BJ', 'RJ']
+CARD_STR = [
+            '2S', '3S', '4S', '5S', '6S', '7S', '8S', '9S', 'TS', 'JS', 'QS', 'KS', 'AS',
+            '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH',
+            '2C', '3C', '4C', '5C', '6C', '7C', '8C', '9C', 'TC', 'JC', 'QC', 'KC', 'AC',
+            '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', 'TD', 'JD', 'QD', 'KD', 'AD',
+            'BJ', 'RJ']
 
-CARD_RANK_DICT = {'3H': 0, '4H': 1, '5H': 2, '6H': 3, '7H': 4, '8H': 5, '9H': 6, 'TH': 7, 'JH': 8, 'QH': 9, 'KH': 10, 'AH': 11, '3C': 12, '4C': 13, '5C': 14, '6C': 15, '7C': 16, '8C': 17, '9C': 18, 'TC': 19, 'JC': 20, 'QC': 21, 'KC': 22, 'AC': 23, '3D': 24, '4D': 25, '5D': 26, '6D': 27, '7D': 28, '8D': 29, '9D': 30, 'TD': 31, 'JD': 32, 'QD': 33, 'KD': 34, 'AD': 35, '3S': 36, '4S': 37, '5S': 38, '6S': 39, '7S': 40, '8S': 41, '9S': 42, 'TS': 43, 'JS': 44, 'QS': 45, 'KS': 46, 'AS': 47, '2H': 48, '2C': 49, '2D': 50, '2S': 51, 'BJ': 52, 'RJ': 53}
+CARD_RANK_STR = [
+            '2S', '3S', '4S', '5S', '6S', '7S', '8S', '9S', 'TS', 'JS', 'QS', 'KS', 'AS',
+            '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH',
+            '2C', '3C', '4C', '5C', '6C', '7C', '8C', '9C', 'TC', 'JC', 'QC', 'KC', 'AC',
+            '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', 'TD', 'JD', 'QD', 'KD', 'AD',
+            '2J', '3J', '4J', '5J', '6J', '7J', '8J', '9J', 'TJ', 'JJ', 'QJ', 'KJ', 'AJ',
+            'NS', 'NH', 'NC', 'ND', 'NJ', 'BJ', 'RJ']
 
-CARD_VALUE = [103,104,105,106,107,108,109,110,111,112,113,114,
-              203,204,205,206,207,208,209,210,211,212,213,214,
-              303,304,305,306,307,308,309,310,311,312,313,314,
-              403,404,405,406,407,408,409,410,411,412,413,414,
-              501,501,501,502,503,504
-             ]
+TRUMP_CANDIDATE_STR = [
+            '2S', '3S', '4S', '5S', '6S', '7S', '8S', '9S', 'TS', 'JS', 'QS', 'KS', 'AS',
+            '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH',
+            '2C', '3C', '4C', '5C', '6C', '7C', '8C', '9C', 'TC', 'JC', 'QC', 'KC', 'AC',
+            '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', 'TD', 'JD', 'QD', 'KD', 'AD',
+            '2J', '3J', '4J', '5J', '6J', '7J', '8J', '9J', 'TJ', 'JJ', 'QJ', 'KJ', 'AJ'
+            ]
+
+CARD_RANK_DICT = {'2S': 0, '3S': 1, '4S': 2, '5S': 3, '6S': 4, '7S': 5, '8S': 6, '9S': 7, 'TS': 8, 'JS': 9, 'QS': 10, 'KS': 11, 'AS': 12, '2H': 13, '3H': 14, '4H': 15, '5H': 16, '6H': 17, '7H': 18, '8H': 19, '9H': 20, 'TH': 21, 'JH': 22, 'QH': 23, 'KH': 24, 'AH': 25, '2C': 26, '3C': 27, '4C': 28, '5C': 29, '6C': 30, '7C': 31, '8C': 32, '9C': 33, 'TC': 34, 'JC': 35, 'QC': 36, 'KC': 37, 'AC': 38, '2D': 39, '3D': 40, '4D': 41, '5D': 42, '6D': 43, '7D': 44, '8D': 45, '9D': 46, 'TD': 47, 'JD': 48, 'QD': 49, 'KD': 50, 'AD': 51, '2J': 52, '3J': 53, '4J': 54, '5J': 55, '6J': 56, '7J': 57, '8J': 58, '9J': 59, 'TJ': 60, 'JJ': 61, 'QJ': 62, 'KJ': 63, 'AJ': 64, 'NS': 65, 'NH': 66, 'NC': 67, 'ND': 68, 'NJ': 69, 'BJ': 70, 'RJ': 71}
 
 CARD_SCORE = {
-                '5S':  5, '5H':  5, '5C':  5, '5D' : 5,
-                'TS': 10, 'TH': 10, 'TC': 10, 'TD': 10,
-                'KS': 10, 'KH': 10, 'KC': 10, 'KD': 10
+                '5S':  5, '5H':  5, '5C':  5, '5D' : 5, '5J' : 5,
+                'TS': 10, 'TH': 10, 'TC': 10, 'TD': 10, 'TJ' : 10,
+                'KS': 10, 'KH': 10, 'KC': 10, 'KD': 10, 'KJ' : 10,
             }
+
+CARD_SCORE_5 = {
+                '5S':  5, '5H':  5, '5C':  5, '5D' : 5, '5J' : 5,
+                'TS': 10, 'TH': 10, 'TC': 10, 'TD': 10, 'TJ' : 10,
+                'KS': 10, 'KH': 10, 'KC': 10, 'KD': 10, 'KJ' : 10,
+                'NS':  5, 'NH':  5, 'NC':  5, 'ND' : 5, 'NJ' : 5,
+            }
+
+CARD_SCORE_TK = {
+                '5S':  5, '5H':  5, '5C':  5, '5D' : 5, '5J' : 5,
+                'TS': 10, 'TH': 10, 'TC': 10, 'TD': 10, 'TJ' : 10,
+                'KS': 10, 'KH': 10, 'KC': 10, 'KD': 10, 'KJ' : 10,
+                'NS': 10, 'NH': 10, 'NC': 10, 'ND': 10, 'NJ' : 10,
+            }
+
 
 SUIT_RANK = {
                 'S' : 0,
                 'H' : 1,
                 'C' : 2,
                 'D' : 3,
-                'J' : 4
+                'J' : 4,
             }
 
-ACTION_LIST = ['2C', '2C,2C', '2C,2C,2S,2S', '2D', '2D,2D', '2D,2D,2S,2S', '2H', '2H,2H', '2H,2H,2S,2S', '2S', '2S,2S', '2S,2S,BJ,BJ', '3C', '3C,3C', '3C,3C,4C,4C', '3D', '3D,3D', '3D,3D,4D,4D', '3H', '3H,3H', '3H,3H,4H,4H', '3S', '3S,3S', '3S,3S,4S,4S', '4C', '4C,4C', '4C,4C,5C,5C', '4D', '4D,4D', '4D,4D,5D,5D', '4H', '4H,4H', '4H,4H,5H,5H', '4S', '4S,4S', '4S,4S,5S,5S', '5C', '5C,5C', '5C,5C,6C,6C', '5D', '5D,5D', '5D,5D,6D,6D', '5H', '5H,5H', '5H,5H,6H,6H', '5S', '5S,5S', '5S,5S,6S,6S', '6C', '6C,6C', '6C,6C,7C,7C', '6D', '6D,6D', '6D,6D,7D,7D', '6H', '6H,6H', '6H,6H,7H,7H', '6S', '6S,6S', '6S,6S,7S,7S', '7C', '7C,7C', '7C,7C,8C,8C', '7D', '7D,7D', '7D,7D,8D,8D', '7H', '7H,7H', '7H,7H,8H,8H', '7S', '7S,7S', '7S,7S,8S,8S', '8C', '8C,8C', '8C,8C,9C,9C', '8D', '8D,8D', '8D,8D,9D,9D', '8H', '8H,8H', '8H,8H,9H,9H', '8S', '8S,8S', '8S,8S,9S,9S', '9C', '9C,9C', '9C,9C,TC,TC', '9D', '9D,9D', '9D,9D,TD,TD', '9H', '9H,9H', '9H,9H,TH,TH', '9S', '9S,9S', '9S,9S,TS,TS', 'AC', 'AC,AC', 'AD', 'AD,AD', 'AH', 'AH,AH', 'AS', 'AS,AS', 'AS,AS,2C,2C', 'AS,AS,2D,2D', 'AS,AS,2H,2H', 'BJ', 'BJ,BJ', 'BJ,BJ,RJ,RJ', 'JC', 'JC,JC', 'JC,JC,QC,QC', 'JD', 'JD,JD', 'JD,JD,QD,QD', 'JH', 'JH,JH', 'JH,JH,QH,QH', 'JS', 'JS,JS', 'JS,JS,QS,QS', 'KC', 'KC,KC', 'KC,KC,AC,AC', 'KD', 'KD,KD', 'KD,KD,AD,AD', 'KH', 'KH,KH', 'KH,KH,AH,AH', 'KS', 'KS,KS', 'KS,KS,AS,AS', 'QC', 'QC,QC', 'QC,QC,KC,KC', 'QD', 'QD,QD', 'QD,QD,KD,KD', 'QH', 'QH,QH', 'QH,QH,KH,KH', 'QS', 'QS,QS', 'QS,QS,KS,KS', 'RJ', 'RJ,RJ', 'TC', 'TC,TC', 'TC,TC,JC,JC', 'TD', 'TD,TD', 'TD,TD,JD,JD', 'TH', 'TH,TH', 'TH,TH,JH,JH', 'TS', 'TS,TS', 'TS,TS,JS,JS', 'pass', 'pass_score']
+NUM_DICT = {
+    '2': 0,
+    '3': 1,
+    '4': 2,
+    '5': 3,
+    '6': 4,
+    '7': 5,
+    '8': 6,
+    '9': 7,
+    'T': 8,
+    'J': 9,
+    'Q': 10,
+    'K': 11,
+    'A': 12,
+}
 
-ACTION_SPACE = {'2C': 0, '2C,2C': 1, '2C,2C,2S,2S': 2, '2D': 3, '2D,2D': 4, '2D,2D,2S,2S': 5, '2H': 6, '2H,2H': 7, '2H,2H,2S,2S': 8, '2S': 9, '2S,2S': 10, '2S,2S,BJ,BJ': 11, '3C': 12, '3C,3C': 13, '3C,3C,4C,4C': 14, '3D': 15, '3D,3D': 16, '3D,3D,4D,4D': 17, '3H': 18, '3H,3H': 19, '3H,3H,4H,4H': 20, '3S': 21, '3S,3S': 22, '3S,3S,4S,4S': 23, '4C': 24, '4C,4C': 25, '4C,4C,5C,5C': 26, '4D': 27, '4D,4D': 28, '4D,4D,5D,5D': 29, '4H': 30, '4H,4H': 31, '4H,4H,5H,5H': 32, '4S': 33, '4S,4S': 34, '4S,4S,5S,5S': 35, '5C': 36, '5C,5C': 37, '5C,5C,6C,6C': 38, '5D': 39, '5D,5D': 40, '5D,5D,6D,6D': 41, '5H': 42, '5H,5H': 43, '5H,5H,6H,6H': 44, '5S': 45, '5S,5S': 46, '5S,5S,6S,6S': 47, '6C': 48, '6C,6C': 49, '6C,6C,7C,7C': 50, '6D': 51, '6D,6D': 52, '6D,6D,7D,7D': 53, '6H': 54, '6H,6H': 55, '6H,6H,7H,7H': 56, '6S': 57, '6S,6S': 58, '6S,6S,7S,7S': 59, '7C': 60, '7C,7C': 61, '7C,7C,8C,8C': 62, '7D': 63, '7D,7D': 64, '7D,7D,8D,8D': 65, '7H': 66, '7H,7H': 67, '7H,7H,8H,8H': 68, '7S': 69, '7S,7S': 70, '7S,7S,8S,8S': 71, '8C': 72, '8C,8C': 73, '8C,8C,9C,9C': 74, '8D': 75, '8D,8D': 76, '8D,8D,9D,9D': 77, '8H': 78, '8H,8H': 79, '8H,8H,9H,9H': 80, '8S': 81, '8S,8S': 82, '8S,8S,9S,9S': 83, '9C': 84, '9C,9C': 85, '9C,9C,TC,TC': 86, '9D': 87, '9D,9D': 88, '9D,9D,TD,TD': 89, '9H': 90, '9H,9H': 91, '9H,9H,TH,TH': 92, '9S': 93, '9S,9S': 94, '9S,9S,TS,TS': 95, 'AC': 96, 'AC,AC': 97, 'AD': 98, 'AD,AD': 99, 'AH': 100, 'AH,AH': 101, 'AS': 102, 'AS,AS': 103, 'AS,AS,2C,2C': 104, 'AS,AS,2D,2D': 105, 'AS,AS,2H,2H': 106, 'BJ': 107, 'BJ,BJ': 108, 'BJ,BJ,RJ,RJ': 109, 'JC': 110, 'JC,JC': 111, 'JC,JC,QC,QC': 112, 'JD': 113, 'JD,JD': 114, 'JD,JD,QD,QD': 115, 'JH': 116, 'JH,JH': 117, 'JH,JH,QH,QH': 118, 'JS': 119, 'JS,JS': 120, 'JS,JS,QS,QS': 121, 'KC': 122, 'KC,KC': 123, 'KC,KC,AC,AC': 124, 'KD': 125, 'KD,KD': 126, 'KD,KD,AD,AD': 127, 'KH': 128, 'KH,KH': 129, 'KH,KH,AH,AH': 130, 'KS': 131, 'KS,KS': 132, 'KS,KS,AS,AS': 133, 'QC': 134, 'QC,QC': 135, 'QC,QC,KC,KC': 136, 'QD': 137, 'QD,QD': 138, 'QD,QD,KD,KD': 139, 'QH': 140, 'QH,QH': 141, 'QH,QH,KH,KH': 142, 'QS': 143, 'QS,QS': 144, 'QS,QS,KS,KS': 145, 'RJ': 146, 'RJ,RJ': 147, 'TC': 148, 'TC,TC': 149, 'TC,TC,JC,JC': 150, 'TD': 151, 'TD,TD': 152, 'TD,TD,JD,JD': 153, 'TH': 154, 'TH,TH': 155, 'TH,TH,JH,JH': 156, 'TS': 157, 'TS,TS': 158, 'TS,TS,JS,JS': 159, 'pass': 160, 'pass_score': 161}
+ACTION_LIST = ['3H', '4H', '5H', '6H', '7H', '8H', '9H', 'TH', 'JH', 'QH', 'KH', 'AH', '3C', '4C', '5C', '6C', '7C', '8C', '9C', 'TC', 'JC', 'QC', 'KC', 'AC', '3D', '4D', '5D', '6D', '7D', '8D', '9D', 'TD', 'JD', 'QD', 'KD', 'AD', '3J', '4J', '5J', '6J', '7J', '8J', '9J', 'TJ', 'JJ', 'QJ', 'KJ', 'AJ', 'NH', 'NC', 'ND', 'NJ', 'BJ', 'RJ', '3H,3H', '4H,4H', '5H,5H', '6H,6H', '7H,7H', '8H,8H', '9H,9H', 'TH,TH', 'JH,JH', 'QH,QH', 'KH,KH', 'AH,AH', '3C,3C', '4C,4C', '5C,5C', '6C,6C', '7C,7C', '8C,8C', '9C,9C', 'TC,TC', 'JC,JC', 'QC,QC', 'KC,KC', 'AC,AC', '3D,3D', '4D,4D', '5D,5D', '6D,6D', '7D,7D', '8D,8D', '9D,9D', 'TD,TD', 'JD,JD', 'QD,QD', 'KD,KD', 'AD,AD', '3J,3J', '4J,4J', '5J,5J', '6J,6J', '7J,7J', '8J,8J', '9J,9J', 'TJ,TJ', 'JJ,JJ', 'QJ,QJ', 'KJ,KJ', 'AJ,AJ', 'NH,NH', 'NC,NC', 'ND,ND', 'NJ,NJ', 'BJ,BJ', 'RJ,RJ', '3H,3H,4H,4H', '4H,4H,5H,5H', '5H,5H,6H,6H', '6H,6H,7H,7H', '7H,7H,8H,8H', '8H,8H,9H,9H', '9H,9H,TH,TH', 'TH,TH,JH,JH', 'JH,JH,QH,QH', 'QH,QH,KH,KH', 'KH,KH,AH,AH', '3C,3C,4C,4C', '4C,4C,5C,5C', '5C,5C,6C,6C', '6C,6C,7C,7C', '7C,7C,8C,8C', '8C,8C,9C,9C', '9C,9C,TC,TC', 'TC,TC,JC,JC', 'JC,JC,QC,QC', 'QC,QC,KC,KC', 'KC,KC,AC,AC', '3D,3D,4D,4D', '4D,4D,5D,5D', '5D,5D,6D,6D', '6D,6D,7D,7D', '7D,7D,8D,8D', '8D,8D,9D,9D', '9D,9D,TD,TD', 'TD,TD,JD,JD', 'JD,JD,QD,QD', 'QD,QD,KD,KD', 'KD,KD,AD,AD', '3J,3J,4J,4J', '4J,4J,5J,5J', '5J,5J,6J,6J', '6J,6J,7J,7J', '7J,7J,8J,8J', '8J,8J,9J,9J', '9J,9J,TJ,TJ', 'TJ,TJ,JJ,JJ', 'JJ,JJ,QJ,QJ', 'QJ,QJ,KJ,KJ', 'KJ,KJ,AJ,AJ', 'NJ,NJ,BJ,BJ', 'BJ,BJ,RJ,RJ', 'NH,NH,NJ,NJ', 'NC,NC,NJ,NJ', 'ND,ND,NJ,NJ', 'AJ,AJ,NH,NH', 'AJ,AJ,NC,NC', 'AJ,AJ,ND,ND', '2H', '2C', '2D', '2J', '2H,2H', '2C,2C', '2D,2D', '2J,2J', '2H,2H,4H,4H', '2C,2C,4C,4C', '2D,2D,4D,4D', '2J,2J,4J,4J', '2H,2H,3H,3H', '3H,3H,5H,5H', '2C,2C,3C,3C', '3C,3C,5C,5C', '2D,2D,3D,3D', '3D,3D,5D,5D', '2J,2J,3J,3J', '3J,3J,5J,5J', '4H,4H,6H,6H', '4C,4C,6C,6C', '4D,4D,6D,6D', '4J,4J,6J,6J', '5H,5H,7H,7H', '5C,5C,7C,7C', '5D,5D,7D,7D', '5J,5J,7J,7J', '6H,6H,8H,8H', '6C,6C,8C,8C', '6D,6D,8D,8D', '6J,6J,8J,8J', '7H,7H,9H,9H', '7C,7C,9C,9C', '7D,7D,9D,9D', '7J,7J,9J,9J', '8H,8H,TH,TH', '8C,8C,TC,TC', '8D,8D,TD,TD', '8J,8J,TJ,TJ', '9H,9H,JH,JH', '9C,9C,JC,JC', '9D,9D,JD,JD', '9J,9J,JJ,JJ', 'TH,TH,QH,QH', 'TC,TC,QC,QC', 'TD,TD,QD,QD', 'TJ,TJ,QJ,QJ', 'JH,JH,KH,KH', 'JC,JC,KC,KC', 'JD,JD,KD,KD', 'JJ,JJ,KJ,KJ', 'QH,QH,AH,AH', 'QC,QC,AC,AC', 'QD,QD,AD,AD', 'QJ,QJ,AJ,AJ', '3S', '4S', '5S', '6S', '7S', '8S', '9S', 'TS', 'JS', 'QS', 'KS', 'AS', 'NS', '3S,3S', '4S,4S', '5S,5S', '6S,6S', '7S,7S', '8S,8S', '9S,9S', 'TS,TS', 'JS,JS', 'QS,QS', 'KS,KS', 'AS,AS', 'NS,NS', '3S,3S,4S,4S', '4S,4S,5S,5S', '5S,5S,6S,6S', '6S,6S,7S,7S', '7S,7S,8S,8S', '8S,8S,9S,9S', '9S,9S,TS,TS', 'TS,TS,JS,JS', 'JS,JS,QS,QS', 'QS,QS,KS,KS', 'KS,KS,AS,AS', 'NS,NS,NJ,NJ', 'AJ,AJ,NS,NS', '2S', '2S,2S', '2S,2S,4S,4S', '2S,2S,3S,3S', '3S,3S,5S,5S', '4S,4S,6S,6S', '5S,5S,7S,7S', '6S,6S,8S,8S', '7S,7S,9S,9S', '8S,8S,TS,TS', '9S,9S,JS,JS', 'TS,TS,QS,QS', 'JS,JS,KS,KS', 'QS,QS,AS,AS', 'NS,NS,BJ,BJ', 'NH,NH,BJ,BJ', 'NC,NC,BJ,BJ', 'ND,ND,BJ,BJ', 'pass', 'pass_score']
 
-def hand2type(cards, trump):
+ACTION_SPACE = {'3H': 0, '4H': 1, '5H': 2, '6H': 3, '7H': 4, '8H': 5, '9H': 6, 'TH': 7, 'JH': 8, 'QH': 9, 'KH': 10, 'AH': 11, '3C': 12, '4C': 13, '5C': 14, '6C': 15, '7C': 16, '8C': 17, '9C': 18, 'TC': 19, 'JC': 20, 'QC': 21, 'KC': 22, 'AC': 23, '3D': 24, '4D': 25, '5D': 26, '6D': 27, '7D': 28, '8D': 29, '9D': 30, 'TD': 31, 'JD': 32, 'QD': 33, 'KD': 34, 'AD': 35, '3J': 36, '4J': 37, '5J': 38, '6J': 39, '7J': 40, '8J': 41, '9J': 42, 'TJ': 43, 'JJ': 44, 'QJ': 45, 'KJ': 46, 'AJ': 47, 'NH': 48, 'NC': 49, 'ND': 50, 'NJ': 51, 'BJ': 52, 'RJ': 53, '3H,3H': 54, '4H,4H': 55, '5H,5H': 56, '6H,6H': 57, '7H,7H': 58, '8H,8H': 59, '9H,9H': 60, 'TH,TH': 61, 'JH,JH': 62, 'QH,QH': 63, 'KH,KH': 64, 'AH,AH': 65, '3C,3C': 66, '4C,4C': 67, '5C,5C': 68, '6C,6C': 69, '7C,7C': 70, '8C,8C': 71, '9C,9C': 72, 'TC,TC': 73, 'JC,JC': 74, 'QC,QC': 75, 'KC,KC': 76, 'AC,AC': 77, '3D,3D': 78, '4D,4D': 79, '5D,5D': 80, '6D,6D': 81, '7D,7D': 82, '8D,8D': 83, '9D,9D': 84, 'TD,TD': 85, 'JD,JD': 86, 'QD,QD': 87, 'KD,KD': 88, 'AD,AD': 89, '3J,3J': 90, '4J,4J': 91, '5J,5J': 92, '6J,6J': 93, '7J,7J': 94, '8J,8J': 95, '9J,9J': 96, 'TJ,TJ': 97, 'JJ,JJ': 98, 'QJ,QJ': 99, 'KJ,KJ': 100, 'AJ,AJ': 101, 'NH,NH': 102, 'NC,NC': 103, 'ND,ND': 104, 'NJ,NJ': 105, 'BJ,BJ': 106, 'RJ,RJ': 107, '3H,3H,4H,4H': 108, '4H,4H,5H,5H': 109, '5H,5H,6H,6H': 110, '6H,6H,7H,7H': 111, '7H,7H,8H,8H': 112, '8H,8H,9H,9H': 113, '9H,9H,TH,TH': 114, 'TH,TH,JH,JH': 115, 'JH,JH,QH,QH': 116, 'QH,QH,KH,KH': 117, 'KH,KH,AH,AH': 118, '3C,3C,4C,4C': 119, '4C,4C,5C,5C': 120, '5C,5C,6C,6C': 121, '6C,6C,7C,7C': 122, '7C,7C,8C,8C': 123, '8C,8C,9C,9C': 124, '9C,9C,TC,TC': 125, 'TC,TC,JC,JC': 126, 'JC,JC,QC,QC': 127, 'QC,QC,KC,KC': 128, 'KC,KC,AC,AC': 129, '3D,3D,4D,4D': 130, '4D,4D,5D,5D': 131, '5D,5D,6D,6D': 132, '6D,6D,7D,7D': 133, '7D,7D,8D,8D': 134, '8D,8D,9D,9D': 135, '9D,9D,TD,TD': 136, 'TD,TD,JD,JD': 137, 'JD,JD,QD,QD': 138, 'QD,QD,KD,KD': 139, 'KD,KD,AD,AD': 140, '3J,3J,4J,4J': 141, '4J,4J,5J,5J': 142, '5J,5J,6J,6J': 143, '6J,6J,7J,7J': 144, '7J,7J,8J,8J': 145, '8J,8J,9J,9J': 146, '9J,9J,TJ,TJ': 147, 'TJ,TJ,JJ,JJ': 148, 'JJ,JJ,QJ,QJ': 149, 'QJ,QJ,KJ,KJ': 150, 'KJ,KJ,AJ,AJ': 151, 'NJ,NJ,BJ,BJ': 152, 'BJ,BJ,RJ,RJ': 153, 'NH,NH,NJ,NJ': 154, 'NC,NC,NJ,NJ': 155, 'ND,ND,NJ,NJ': 156, 'AJ,AJ,NH,NH': 157, 'AJ,AJ,NC,NC': 158, 'AJ,AJ,ND,ND': 159, '2H': 160, '2C': 161, '2D': 162, '2J': 163, '2H,2H': 164, '2C,2C': 165, '2D,2D': 166, '2J,2J': 167, '2H,2H,4H,4H': 168, '2C,2C,4C,4C': 169, '2D,2D,4D,4D': 170, '2J,2J,4J,4J': 171, '2H,2H,3H,3H': 172, '3H,3H,5H,5H': 173, '2C,2C,3C,3C': 174, '3C,3C,5C,5C': 175, '2D,2D,3D,3D': 176, '3D,3D,5D,5D': 177, '2J,2J,3J,3J': 178, '3J,3J,5J,5J': 179, '4H,4H,6H,6H': 180, '4C,4C,6C,6C': 181, '4D,4D,6D,6D': 182, '4J,4J,6J,6J': 183, '5H,5H,7H,7H': 184, '5C,5C,7C,7C': 185, '5D,5D,7D,7D': 186, '5J,5J,7J,7J': 187, '6H,6H,8H,8H': 188, '6C,6C,8C,8C': 189, '6D,6D,8D,8D': 190, '6J,6J,8J,8J': 191, '7H,7H,9H,9H': 192, '7C,7C,9C,9C': 193, '7D,7D,9D,9D': 194, '7J,7J,9J,9J': 195, '8H,8H,TH,TH': 196, '8C,8C,TC,TC': 197, '8D,8D,TD,TD': 198, '8J,8J,TJ,TJ': 199, '9H,9H,JH,JH': 200, '9C,9C,JC,JC': 201, '9D,9D,JD,JD': 202, '9J,9J,JJ,JJ': 203, 'TH,TH,QH,QH': 204, 'TC,TC,QC,QC': 205, 'TD,TD,QD,QD': 206, 'TJ,TJ,QJ,QJ': 207, 'JH,JH,KH,KH': 208, 'JC,JC,KC,KC': 209, 'JD,JD,KD,KD': 210, 'JJ,JJ,KJ,KJ': 211, 'QH,QH,AH,AH': 212, 'QC,QC,AC,AC': 213, 'QD,QD,AD,AD': 214, 'QJ,QJ,AJ,AJ': 215, '3S': 216, '4S': 217, '5S': 218, '6S': 219, '7S': 220, '8S': 221, '9S': 222, 'TS': 223, 'JS': 224, 'QS': 225, 'KS': 226, 'AS': 227, 'NS': 228, '3S,3S': 229, '4S,4S': 230, '5S,5S': 231, '6S,6S': 232, '7S,7S': 233, '8S,8S': 234, '9S,9S': 235, 'TS,TS': 236, 'JS,JS': 237, 'QS,QS': 238, 'KS,KS': 239, 'AS,AS': 240, 'NS,NS': 241, '3S,3S,4S,4S': 242, '4S,4S,5S,5S': 243, '5S,5S,6S,6S': 244, '6S,6S,7S,7S': 245, '7S,7S,8S,8S': 246, '8S,8S,9S,9S': 247, '9S,9S,TS,TS': 248, 'TS,TS,JS,JS': 249, 'JS,JS,QS,QS': 250, 'QS,QS,KS,KS': 251, 'KS,KS,AS,AS': 252, 'NS,NS,NJ,NJ': 253, 'AJ,AJ,NS,NS': 254, '2S': 255, '2S,2S': 256, '2S,2S,4S,4S': 257, '2S,2S,3S,3S': 258, '3S,3S,5S,5S': 259, '4S,4S,6S,6S': 260, '5S,5S,7S,7S': 261, '6S,6S,8S,8S': 262, '7S,7S,9S,9S': 263, '8S,8S,TS,TS': 264, '9S,9S,JS,JS': 265, 'TS,TS,QS,QS': 266, 'JS,JS,KS,KS': 267, 'QS,QS,AS,AS': 268, 'NS,NS,BJ,BJ': 269, 'NH,NH,BJ,BJ': 270, 'NC,NC,BJ,BJ': 271, 'ND,ND,BJ,BJ': 272, 'pass': 273, 'pass_score': 274}
+
+def hand2type(cards):
     ''' Get type of the hand
     Args:
         cards: list of string
@@ -56,24 +97,21 @@ def hand2type(cards, trump):
     ret_type = len(cards) * 10
     
     # check suit
-    if (cards[0][0] == trump[0] or cards[0][1] == trump[1] or cards[0][1] == 'J'):
-        ret_type += 4
-    else:
-        ret_type += SUIT_RANK[cards[0][1]]
+    ret_type += get_suit(cards[0])
     
     return ret_type
 
-def trump_type_to_win(target_type):
-    return target_type // 10 * 10 + 4
+def get_suit(card):
+    if card[0] == 'N':
+        return 4
+    else:
+        return SUIT_RANK[card[1]]
 
-def is_same_suit(card_1, card_2, trump):
-    suit = []
-    for card in [card_1, card_2]:
-        if (card[0] == trump[0] or card[1] == trump[1] or card[1] == 'J'):
-            suit.append(4)
-        else:
-            suit.append(SUIT_RANK[card[1]])
-    return suit[0] == suit[1]
+def trump_type_to_win(target_type):
+    return target_type // 10 * 10 + SUIT_RANK['J']
+
+def is_same_suit(card_1, card_2):
+    return get_suit(card_1) == get_suit(card_2)
 
 def tractor_sort_card(card_1, card_2):
     ''' Compare the rank of two cards of Card object
@@ -90,7 +128,19 @@ def tractor_sort_card(card_1, card_2):
         return -1
     return 0
 
-def get_valid_cards(first_player, playable_cards, trump):
+def calc_score(cards, trump):
+    if trump[0] == '5':
+        score_dict = CARD_SCORE_5
+    elif trump[0] == 'T' or trump[0] == 'K':
+        score_dict = CARD_SCORE_TK
+    else:
+        score_dict = CARD_SCORE
+
+    scores = [score_dict[x] for x in cards if x in score_dict.keys()]
+    score_in_round = sum(scores)
+    return score_in_round
+
+def get_valid_cards(first_player, playable_cards):
     '''
         Returns:
         list: list of string of valid cards based on first player's card type
@@ -101,8 +151,8 @@ def get_valid_cards(first_player, playable_cards, trump):
     '''
     valid_cards = []
     target_hand = first_player.played_cards # list of string
-    target_type = hand2type(target_hand, trump)
-    playable_cards_type = [(cards, hand2type(cards, trump)) for cards in playable_cards]
+    target_type = hand2type(target_hand,)
+    playable_cards_type = [(cards, hand2type(cards)) for cards in playable_cards]
 
     matched_playable_cards = [x[0] for x in playable_cards_type if x[1] == target_type]
     if len(matched_playable_cards) > 0:
@@ -144,6 +194,7 @@ def encode_cards(plane, cards):
             plane[1][rank] = 0
             plane[2][rank] = 1
 
+
 def reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs):
     ''' Reorganize the trajectory to make it RL friendly
 
@@ -162,7 +213,7 @@ def reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs):
         for i in range(0, len(trajectories[player])-2, 2):
             reward = payoffs_with_trace[i // 2][player % 2]
             if i ==len(trajectories[player])-3:
-                # reward += payoffs[player] # add a final payoff of winning/losing a game
+                #reward += payoffs[player] # add a final payoff for each game
                 done = True
             else:
                 done = False

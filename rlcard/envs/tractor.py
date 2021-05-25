@@ -5,7 +5,7 @@ from rlcard.envs import Env
 from rlcard.utils import reorganize
 from rlcard.games.tractor.utils import reorganize_with_payoff_trace
 from rlcard.games.tractor import Game
-from rlcard.games.tractor.utils import encode_cards, ACTION_LIST, ACTION_SPACE
+from rlcard.games.tractor.utils import encode_cards, ACTION_LIST, ACTION_SPACE, NUM_DICT
 
 
 class TractorEnv(Env):
@@ -17,9 +17,7 @@ class TractorEnv(Env):
         self.name = 'tractor'
         self.game = Game()
         super().__init__(config)
-        # self.state_shape = [3, 3, 54]
-        # self.state_shape = [5, 3, 54]
-        self.state_shape = [7, 3, 54]
+        self.state_shape = [9, 3, 72]
 
     def run(self, is_training=False, debug=False):
         '''
@@ -64,17 +62,13 @@ class TractorEnv(Env):
             else:
                 action = self.agents[player_id].step(state)
 
-            # action, _ = self.agents[player_id].eval_step(state)
-
             # Environment steps
             next_state, next_player_id = self.step(action, self.agents[player_id].use_raw)
             # Save action
             trajectories[player_id].append(action)
-
             # Set the state and player
             state = next_state
             player_id = next_player_id
-
             # Save state.
             if not self.game.is_over():
                 trajectories[player_id].append(state)
@@ -85,11 +79,8 @@ class TractorEnv(Env):
             trajectories[player_id].append(state)
 
         # Payoffs
-        # Option 1: get final payoffs after each game
+        # Get payoffs after each round
         payoffs = self.get_payoffs()
-        # trajectories = reorganize(trajectories, payoffs)
-
-        # Option 2: get payoffs after each round
         payoffs_with_trace = self.get_payoffs_trace()
         trajectories = reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs)
 
@@ -111,41 +102,31 @@ class TractorEnv(Env):
                     # up-player possible hand
                     # down-player possible hand
         '''
-        # obs = np.zeros((3, 3, 54), dtype=int)
-        # obs = np.zeros((5, 3, 54), dtype=int)
-        obs = np.zeros((7, 3, 54), dtype=int)
+        obs = np.zeros((9, 3, 72), dtype=int)
         
         # for index in range(5):
-        for index in range(7):
-            obs[index][0] = np.ones(54, dtype=int)
+        for index in range(8):
+            obs[index][0] = np.ones(72, dtype=int)
         encode_cards(obs[0], state['current_hand'])
-
-        # open play
-        # encode_cards(obs[1], state['others_hand'][0])
-        # encode_cards(obs[2], state['others_hand'][1])
-        # encode_cards(obs[3], state['others_hand'][2])
         
         # "guess" play - real scenario
         encode_cards(obs[1], state['guessed_others_hand'][0])
         encode_cards(obs[2], state['guessed_others_hand'][1])
         encode_cards(obs[3], state['guessed_others_hand'][2])
 
-        # union all cards in curent round as feature
-        # current_round = [x for x in state['current_round'] if x != None]
-        # if (len(current_round) > 0):
-        #     current_round = functools.reduce(lambda z,y : z + y, current_round)
-        #     encode_cards(obs[4], current_round)
-
         # separatedly provide current round cards from each player
         for i in range(3):
             if state['offseted_current_round'][i] != None:
                 encode_cards(obs[i+4], state['offseted_current_round'][i])
 
-        
-        # obs[5][0][0] = state['score'][0]
-        # obs[5][0][1] = state['score'][1]
+        # remaining cards, possible banker cards
+        encode_cards(obs[7], state['remaining_cards'])
 
-        extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions()}
+        # other features
+        obs[8][0][NUM_DICT[self.game.round.trump[0]]] = 1
+
+        extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions(), 'trump': self.game.round.trump}
+
         if self.allow_raw_data:
             extracted_state['raw_obs'] = state
             # TODO: state['actions'] can be None, may have bugs
