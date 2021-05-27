@@ -8,7 +8,7 @@ from rlcard.models.model import Model
 from rlcard.agents import DQNAgent
 
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV3')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV4')
 
 class TractorNFSPModel(Model):
     ''' A pretrained model on Tractor with NFSP

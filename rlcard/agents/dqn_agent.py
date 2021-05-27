@@ -33,7 +33,7 @@ from collections import namedtuple
 from rlcard.utils.utils import remove_illegal, remove_illegal_without_norm
 from rlcard.agents.tractor_rule_agent import TractorRuleAgent
 
-Transition = namedtuple('Transition', ['state', 'action', 'reward', 'next_state', 'done'])
+Transition = namedtuple('Transition', ['state', 'action', 'reward', 'next_state', 'next_legal_actions', 'done'])
 
 
 class DQNAgent(object):
@@ -119,7 +119,7 @@ class DQNAgent(object):
             ts (list): a list of 5 elements that represent the transition
         '''
         (state, action, reward, next_state, done) = tuple(ts)
-        self.feed_memory(state['obs'], action, reward, next_state['obs'], done)
+        self.feed_memory(state['obs'], action, reward, next_state['obs'], next_state['legal_actions'], done)
         self.total_t += 1
         tmp = self.total_t - self.replay_memory_init_size
 
@@ -196,12 +196,21 @@ class DQNAgent(object):
         Returns:
             loss (float): The loss of the current batch.
         '''
-        state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.memory.sample()
+        state_batch, action_batch, reward_batch, next_state_batch, next_legal_actions_batch, done_batch = self.memory.sample()
         # Calculate q values and targets (Double DQN)
         q_values_next = self.q_estimator.predict(self.sess, next_state_batch)
-        
+
         # TODO: filter legal actions
-        best_next_actions = np.argmax(q_values_next, axis=1)
+        # best_next_actions = np.argmax(q_values_next, axis=1)
+        best_next_actions = []
+        for batch in range(len(next_legal_actions_batch)):
+            next_action = 0
+            max_q = None
+            for action in next_legal_actions_batch[batch]:
+                if (max_q is None or q_values_next[batch][action] > max_q):
+                    next_action = action
+                    max_q = q_values_next[batch][action]
+            best_next_actions.append(next_action)
 
         q_values_next_target = self.target_estimator.predict(self.sess, next_state_batch)
         target_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
@@ -226,7 +235,7 @@ class DQNAgent(object):
         self.train_t += 1
         return loss
 
-    def feed_memory(self, state, action, reward, next_state, done):
+    def feed_memory(self, state, action, reward, next_state, next_legal_actions, done):
         ''' Feed transition to memory
 
         Args:
@@ -236,7 +245,7 @@ class DQNAgent(object):
             next_state (numpy.array): the next state after performing the action
             done (boolean): whether the episode is finished
         '''
-        self.memory.save(state, action, reward, next_state, done)
+        self.memory.save(state, action, reward, next_state, next_legal_actions, done)
 
     def copy_params_op(self, global_vars):
         ''' Copys the variables of two estimator to others.
@@ -359,7 +368,7 @@ class Memory(object):
         self.batch_size = batch_size
         self.memory = []
 
-    def save(self, state, action, reward, next_state, done):
+    def save(self, state, action, reward, next_state, next_legal_actions, done):
         ''' Save transition into memory
 
         Args:
@@ -371,7 +380,7 @@ class Memory(object):
         '''
         if len(self.memory) == self.memory_size:
             self.memory.pop(0)
-        transition = Transition(state, action, reward, next_state, done)
+        transition = Transition(state, action, reward, next_state, next_legal_actions, done)
         self.memory.append(transition)
 
     def sample(self):

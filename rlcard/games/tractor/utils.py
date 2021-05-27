@@ -212,7 +212,7 @@ def reorganize_with_payoff_trace(trajectories, payoffs_with_trace, payoffs):
     for player in range(player_num):
         for i in range(0, len(trajectories[player])-2, 2):
             reward = payoffs_with_trace[i // 2][player % 2]
-            if i ==len(trajectories[player])-3:
+            if i == len(trajectories[player])-3:
                 #reward += payoffs[player] # add a final payoff for each game
                 done = True
             else:
