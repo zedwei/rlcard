@@ -2,8 +2,10 @@
 ''' Implement Tractor Player class
 '''
 import functools
+import random
 from rlcard.games.tractor import Dealer, Judger
-from rlcard.games.tractor.utils import get_valid_cards, is_same_suit, tractor_sort_card, get_suit
+from rlcard.games.tractor.utils import get_valid_cards, tractor_sort_card, get_suit, get_pass_cards_sequence
+from rlcard.games.tractor.utils import SUIT_RANK
 
 class TractorPlayer(object):
     ''' Player stores cards in the player's hand, and can determine the actions can be made according to the rules
@@ -57,7 +59,7 @@ class TractorPlayer(object):
         ''' Perfrom action
 
         Args:
-            action (string): specific action
+            action (list of card string): specific action
             greater_player (Tractor object): The player who played current biggest cards.
 
         Returns:
@@ -65,71 +67,37 @@ class TractorPlayer(object):
             string: cards played
         '''
         removed_cards = []
-        #if (action == 'pass' or action == 'pass_score'):
-        if (action[0] == 'pass'):
+        # pass or scor
+        if (action[0][0] == 'p' or action[0][0] == 's'):
+            is_get_score = False if action[0][0] == 'p' else True
+            second_suit = SUIT_RANK[action[0][5]]
+            suit_candidate = [0,1,2,3,4]
+
             target_hand = first_player.played_cards
-            if len(target_hand) == 1:
+
+            target_suit = get_suit(target_hand[0])
+            suit_sequence = [target_suit]
+            suit_candidate.remove(target_suit)
+
+            if second_suit in suit_candidate:
+                suit_sequence.append(second_suit)
+                suit_candidate.remove(second_suit)
+            
+            random.shuffle(suit_candidate)
+            suit_sequence.extend(suit_candidate)
+
+            if len(target_hand) == 1 or len(target_hand) == 2 or len(target_hand) == 4:
                 # Single
                 # Current player MUST NOT have any card with the same suit according to how actions are picked
-                # Strategy: pick the 1st card in hand, and that card MUST NOT be the trump suit
-
-                removed_cards.append(self.current_hand[0])
-                self.current_hand.remove(self.current_hand[0])
-
-            elif len(target_hand) == 2:
                 # Pair
                 # Current player MUST NOT have any pairs with the same suit
-                # Strategy: first exhaust same suit from smallest ranked card, then pick the global smallest
-                
-                cards_to_remove = 2
-                for target_card in target_hand:
-                    for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_card, remain_card):
-                            removed_cards.append(self.current_hand[_])
-                            self.current_hand.remove(self.current_hand[_])
-                            cards_to_remove -= 1
-                            break
-                for _ in range(cards_to_remove):
-                    removed_cards.append(self.current_hand[0])
-                    self.current_hand.remove(self.current_hand[0])
-
-            elif len(target_hand) == 4:
                 # Tractor
                 # Current player MUST NOT have any tractors with the same suit
-                # Strategy: first exhaust pairs with the same suit (right now is random), 
-                # then singles from same suit, then global smallest
-                # TODO: perf optimization
-
-                # play pairs first
                 playable_cards = judger.get_playable_cards(self)
-                cards_to_remove = 4
-                for cards in playable_cards:
-                    if cards_to_remove == 0:
-                        break
-                    if len(cards) == 2:  # a pair
-                        if is_same_suit(target_hand[0], cards[0]): # same suit
-                            for cardstr in cards:
-                                for _, remain_card in enumerate(self.current_hand):
-                                    if cardstr == remain_card:
-                                        removed_cards.append(self.current_hand[_])
-                                        self.current_hand.remove(self.current_hand[_])
-                                        cards_to_remove -= 1
-                                        break
-
-                # try to remove single with the same suit
-                for _ in range(cards_to_remove):
-                    for _, remain_card in enumerate(self.current_hand):
-                        if is_same_suit(target_hand[0], remain_card):
-                            removed_cards.append(self.current_hand[_])
-                            self.current_hand.remove(self.current_hand[_])
-                            cards_to_remove -= 1
-                            break
-
-                # pick the global smallest
-                for _ in range(cards_to_remove):
-                    removed_cards.append(self.current_hand[0])
-                    self.current_hand.remove(self.current_hand[0])
-
+                sorted_card_list = get_pass_cards_sequence(self.current_hand, playable_cards, is_get_score, len(target_hand) >= 2, suit_sequence, trump)
+                for i in range(len(target_hand)):
+                    removed_cards.append(sorted_card_list[i])
+                    self.current_hand.remove(sorted_card_list[i])
             else:
                 raise NotImplementedError
 

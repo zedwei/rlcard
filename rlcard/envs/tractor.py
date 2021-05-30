@@ -45,6 +45,8 @@ class TractorEnv(Env):
             for i in range(4):
                 print(self.game.players[i].current_hand)
 
+        r = 0
+
         # Loop to play the game
         trajectories[player_id].append(state)
         while not self.is_over():
@@ -52,6 +54,8 @@ class TractorEnv(Env):
             if not is_training:
                 action, prob = self.agents[player_id].eval_step(state)
                 if debug and player_id == 0:
+                    print('Round {}'.format(r))
+                    r = r + 1
                     print(','.join(self.game.players[player_id].current_hand))
                     print(ACTION_LIST[action])
                     probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -100 and prob[i] != 0}

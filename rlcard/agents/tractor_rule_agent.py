@@ -45,9 +45,9 @@ class TractorRuleAgent(object):
             max_score = -3
             max_index = 0
             for i in range(len(actions)):
-                if actions[i][0] == 'pass':
+                if actions[i][0][0] == 'p':
                     score = -1
-                elif actions[i][0] == 'pass_score':
+                elif actions[i][0][0] == 's':
                     score = -2
                 else:
                     score = CARD_RANK_DICT[actions[i][0]]

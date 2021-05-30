@@ -24,7 +24,7 @@ eval_env = rlcard.make('tractor', config={'seed': 0})
 evaluate_every = 5000
 evaluate_num = 1000
 # episode_num = 100000
-episode_num = 100000
+episode_num = 10000000
 
 # The intial memory size
 memory_init_size = 1000

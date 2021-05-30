@@ -60,3 +60,8 @@ register(
     model_id='tractor_dqn_v1',
     entry_point='rlcard.models.tractor_pretrained_models:TractorDQNModel'
 )
+
+register(
+    model_id='tractor_dqn_vnext',
+    entry_point='rlcard.models.tractor_pretrained_models:TractorDQNModelVNext'
+)

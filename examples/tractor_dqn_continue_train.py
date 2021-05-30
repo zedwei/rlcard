@@ -9,11 +9,11 @@ from tqdm import tqdm, trange
 import rlcard
 from rlcard.agents import DQNAgent
 from rlcard.agents import RandomAgent, TractorRuleAgent
-from rlcard.utils import set_global_seed, tournament
+from rlcard.utils import set_global_seed
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg, ACTION_LIST
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV4')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV5')
 
 # Set a global seed
 set_global_seed(0)
@@ -103,7 +103,7 @@ with tf.Session(config=config) as sess:
     payoff_avg = MovingAvg(100)
 
     # load the pre-trained model
-    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_420k')
+    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_430k')
     saver = tf.train.Saver()
     saver.restore(sess, tf.train.latest_checkpoint(check_point_path))
     graph = tf.get_default_graph()
