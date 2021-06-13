@@ -112,6 +112,14 @@ class TractorPlayer(object):
                         removed_cards.append(self.current_hand[_])
                         self.current_hand.remove(self.current_hand[_])
                         break
+            
+            if len(removed_cards) == 0:
+                print(self.initial_hand)
+                print(self.current_hand)
+                print(action)
+                print(judger.get_playable_cards(self))
+                raise Exception("Can't find action cards {} in current_hand {}".format(action, self.current_hand))
+                
             self._recorded_played_cards.append(removed_cards)
             self.played_cards = removed_cards
 

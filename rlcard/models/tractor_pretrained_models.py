@@ -8,7 +8,7 @@ from rlcard.models.model import Model
 from rlcard.agents import DQNAgent
 
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV5')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV6')
 
 class TractorNFSPModel(Model):
     ''' A pretrained model on Tractor with NFSP
@@ -89,9 +89,9 @@ class TractorDQNModel(Model):
         env = rlcard.make('tractor')
         with self.graph.as_default():
             self.dqn_agents = []
-            for i in range(1):
+            for i in range(2):
                 agent = DQNAgent(self.sess,
-                     scope='dqn',
+                     scope='dqn' if i==0 else 'dqn' + str(i),
                      action_num=env.action_num,
                      state_shape=env.state_shape,
                      mlp_layers=[2048,2048],
@@ -107,7 +107,7 @@ class TractorDQNModel(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_345k')
+        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV6\\tractor_dqn_2505k_2230k')
 
         with self.sess.as_default():
             with self.graph.as_default():
@@ -144,9 +144,9 @@ class TractorDQNModelVNext(Model):
         env = rlcard.make('tractor')
         with self.graph.as_default():
             self.dqn_agents = []
-            for i in range(1):
+            for i in range(2):
                 agent = DQNAgent(self.sess,
-                     scope='dqn',
+                     scope='dqn' if i==0 else 'dqn' + str(i),
                      action_num=env.action_num,
                      state_shape=env.state_shape,
                      mlp_layers=[2048,2048],
@@ -162,7 +162,7 @@ class TractorDQNModelVNext(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_820k')
+        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV6\\tractor_dqn_2840k_2465k')
 
         with self.sess.as_default():
             with self.graph.as_default():

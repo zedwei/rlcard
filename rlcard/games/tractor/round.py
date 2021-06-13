@@ -90,7 +90,10 @@ class TractorRound(object):
 
         # update missing suit info of the current player
         if (self.played_player_in_round != 0):
-            if not is_same_suit(self.current_round[self.first_player.player_id][0], played_cards[-1]):
+            a = self.current_round[self.first_player.player_id][0]
+            b = played_cards[-1]
+            if not is_same_suit(a, b):
+            # if not is_same_suit(self.current_round[self.first_player.player_id][0], played_cards[-1]):
                 missing_suit = get_suit(self.current_round[self.first_player.player_id][0])
                 self.suit_avail[player.player_id][missing_suit] = False
 
@@ -102,7 +105,6 @@ class TractorRound(object):
             next_id = (player.player_id + 1) % 4
         else:
             # end of current round
-            
             # calculate score in current round
             score = self.calc_score_in_round()
 
@@ -114,12 +116,17 @@ class TractorRound(object):
                 banker_score = banker_score * (2 ** len(self.greater_player.played_cards))
                 score = score + banker_score
 
-            self.score[self.greater_player.player_id % 2] += score
-
-            # add delta score to score_trace
+            # V6 logic: to simulate the real game, add score to non-banker side, and substrate score from banker side
             score_trace_element = [0, 0]
-            score_trace_element[self.greater_player.player_id % 2] += score
-            # score_trace_element[(self.greater_player.player_id + 1) % 2] -= score
+
+            if self.greater_player.player_id % 2 == 1:
+                self.score[self.greater_player.player_id % 2] += score
+                self.score[(self.greater_player.player_id+1) % 2] -= score
+    
+                # add delta score to score_trace
+                score_trace_element[self.greater_player.player_id % 2] += score
+                score_trace_element[(self.greater_player.player_id + 1) % 2] -= score
+
             self.score_trace.append(score_trace_element)            
 
             # reset round status with next player

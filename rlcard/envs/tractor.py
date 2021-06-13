@@ -58,7 +58,7 @@ class TractorEnv(Env):
                     r = r + 1
                     print(','.join(self.game.players[player_id].current_hand))
                     print(ACTION_LIST[action])
-                    probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -100 and prob[i] != 0}
+                    probs = {ACTION_LIST[i]:prob[i] for i in range(len(prob)) if prob[i] != -10000 and prob[i] != 0}
                     probs = {k: round(v, 4) for k, v in probs.items()}
                     probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
                     print(probs)

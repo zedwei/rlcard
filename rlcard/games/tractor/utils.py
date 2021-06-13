@@ -319,11 +319,17 @@ def tournament_tractor(env, num):
         if isinstance(_payoffs, list):
             for _p in _payoffs:
                 for i, _ in enumerate(payoffs):
-                    if _p[i] > _p[(i+1)%2]:
+                    # if _p[i] > _p[(i+1)%2]:
+                    if i % 2 == 0 and _p[i] > -80:
+                        payoffs[i] += 1
+                    if i % 2 == 1 and _p[i] >= 80:
                         payoffs[i] += 1
         else:
             for i, _ in enumerate(payoffs):
-                if _payoffs[i] > _payoffs[(i+1)%2]:
+                # if _payoffs[i] > _payoffs[(i+1)%2]:
+                if i % 2 == 0 and _payoffs[i] > -80:
+                    payoffs[i] += 1
+                if i % 2 == 1 and _payoffs[i] >= 80:
                     payoffs[i] += 1
     for i, _ in enumerate(payoffs):
         payoffs[i] /= num

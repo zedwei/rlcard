@@ -370,7 +370,7 @@ def remove_illegal_without_norm(action_probs, legal_actions):
     Returns:
         probd (numpy.array): A normalized vector without legal actions.
     '''
-    probs = np.zeros(action_probs.shape[0]) - 100
+    probs = np.zeros(action_probs.shape[0]) - 10000
     probs[legal_actions] = action_probs[legal_actions]
 
     if np.sum(probs) == 0:
