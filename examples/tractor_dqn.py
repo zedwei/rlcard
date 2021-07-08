@@ -14,7 +14,7 @@ from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg, ACTION_LIST
 
 # Set a global seed
-set_global_seed(0)
+set_global_seed(1)
 
 # Make environment
 env = rlcard.make('tractor', config={'seed': 0})

@@ -12,11 +12,13 @@ from rlcard.agents import RandomAgent, TractorRuleAgent
 from rlcard.utils import set_global_seed
 from rlcard.utils import Logger
 from rlcard.games.tractor.utils import tournament_tractor, MovingAvg, ACTION_LIST
+from datetime import datetime
 
-TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV6')
+TRACTOR_PATH = os.path.join(rlcard.__path__[0], 'models\\tractorV7')
 
 # Set a global seed
-set_global_seed(0)
+# set_global_seed(0)
+set_global_seed(4)
 
 # Make environment
 env = rlcard.make('tractor', config={'seed': 0})
@@ -37,6 +39,11 @@ train_every = 64
 save_dir = 'models/tractor_dqn_continue_train'
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
+
+best_dir = 'models/tractor_dqn_continue_train_best'
+if not os.path.exists(best_dir):
+    os.makedirs(best_dir)
+
 
 # Mitigation for gpu memory issue
 config = tf.ConfigProto()
@@ -60,9 +67,11 @@ with tf.Session(config=config) as sess:
                         replay_memory_size=400000,
                         update_target_estimator_every=500,
                         discount_factor=0.99,
-                        epsilon_start=0.5,
+                        # epsilon_start=0.5,
+                        epsilon_start=1,
                         epsilon_end=0.1,
-                        epsilon_decay_steps=100000,
+                        # epsilon_decay_steps=100000,
+                        epsilon_decay_steps=400000,
                         batch_size=256,
                         learning_rate=0.00002,
                         use_rule_policy=False
@@ -100,11 +109,12 @@ with tf.Session(config=config) as sess:
     payoff_avg = [MovingAvg(100), MovingAvg(100)]
 
     # load the pre-trained model
-    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_2505k_2230k')
+    check_point_path = os.path.join(TRACTOR_PATH, 'tractor_dqn_1645k')
     saver = tf.train.Saver()
     saver.restore(sess, tf.train.latest_checkpoint(check_point_path))
     graph = tf.get_default_graph()
     print('INFO: Loaded model from {}'.format(check_point_path))
+    best_performance = 0
 
     t = trange(episode_num, desc='rl-loss:', leave=True)
     for episode in t:
@@ -133,12 +143,13 @@ with tf.Session(config=config) as sess:
                 if rl_loss != None:
                     rl_avg[agent_id % 2].append(rl_loss)
 
-        t.set_description("rl_0: {}, rl_1: {}, po_0: {}, po_1: {}, epsilon: {}".format(
+        t.set_description("rl_0: {}, rl_1: {}, po_0: {}, po_1: {}, epsilon: {}, best_p: {}".format(
             round(rl_avg[0].get(), 2), 
             round(rl_avg[1].get(), 2), 
             round(payoff_avg[0].get(), 2), 
             round(payoff_avg[1].get(), 2), 
-            round(env.agents[feed_range[0]].epsilons[min(agent.total_t, env.agents[feed_range[0]].epsilon_decay_steps-1)], 2)
+            round(env.agents[feed_range[0]].epsilons[min(agent.total_t, env.agents[feed_range[0]].epsilon_decay_steps-1)], 2),
+            best_performance
             ), refresh=True)
 
         # q = env.agents[0].eval_step(state)[1]
@@ -148,15 +159,21 @@ with tf.Session(config=config) as sess:
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == evaluate_every - 1:
-            logger.log_performance(env.timestep, tournament_tractor(eval_env, evaluate_num)[0])
-            logger.log("rl_0: {}, rl_1: {}, po_0: {}, po_1: {}, epsilon: {}".format(
+            p = tournament_tractor(eval_env, evaluate_num)[0]
+            logger.log_performance(env.timestep, p)
+            logger.log("rl_0: {}, rl_1: {}, po_0: {}, po_1: {}, epsilon: {}, best_p: {}".format(
             round(rl_avg[0].get(), 2), 
             round(rl_avg[1].get(), 2), 
             round(payoff_avg[0].get(), 2), 
             round(payoff_avg[1].get(), 2), 
-            round(env.agents[feed_range[0]].epsilons[min(agent.total_t, env.agents[feed_range[0]].epsilon_decay_steps-1)], 2)
+            round(env.agents[feed_range[0]].epsilons[min(agent.total_t, env.agents[feed_range[0]].epsilon_decay_steps-1)], 2),
+            best_performance
             ))
             saver.save(sess, os.path.join(save_dir, 'model'))
+
+            if p > best_performance:
+                best_performance = p
+                saver.save(sess, os.path.join(best_dir, 'model'))
 
     # Close files in the logger
     logger.close_files()

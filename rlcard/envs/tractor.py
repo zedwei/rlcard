@@ -3,7 +3,7 @@ import functools
 
 from rlcard.envs import Env
 from rlcard.utils import reorganize
-from rlcard.games.tractor.utils import reorganize_with_payoff_trace
+from rlcard.games.tractor.utils import reorganize_with_payoff_trace, get_suit, get_seat_offset
 from rlcard.games.tractor import Game
 from rlcard.games.tractor.utils import encode_cards, ACTION_LIST, ACTION_SPACE, NUM_DICT
 
@@ -17,7 +17,7 @@ class TractorEnv(Env):
         self.name = 'tractor'
         self.game = Game()
         super().__init__(config)
-        self.state_shape = [9, 3, 72]
+        self.state_shape = [10, 3, 72]
 
     def run(self, is_training=False, debug=False):
         '''
@@ -106,10 +106,9 @@ class TractorEnv(Env):
                     # up-player possible hand
                     # down-player possible hand
         '''
-        obs = np.zeros((9, 3, 72), dtype=int)
+        obs = np.zeros((10, 3, 72), dtype=int)
         
-        # for index in range(5):
-        for index in range(8):
+        for index in range(9):
             obs[index][0] = np.ones(72, dtype=int)
         encode_cards(obs[0], state['current_hand'])
         
@@ -126,8 +125,56 @@ class TractorEnv(Env):
         # remaining cards, possible banker cards
         encode_cards(obs[7], state['remaining_cards'])
 
+        # greater cards in this round
+        encode_cards(obs[8], state['greater_hand'])
+
         # other features
-        obs[8][0][NUM_DICT[self.game.round.trump[0]]] = 1
+        # 0/0~12: trump number
+        index = NUM_DICT[self.game.round.trump[0]]
+        if index < 0 or index > 12:
+            raise Exception("Invalid feature index")
+        obs[9][0][index] = 1
+
+        # 0/13~16: first player seat offset
+        index = get_seat_offset(state['current_player_id'], state['first_player_id']) + 13
+        if index < 13 or index > 16:
+            raise Exception("Invalid feature index")
+        obs[9][0][index] = 1
+
+        # 0/17~20: greater player seat offset
+        index = get_seat_offset(state['current_player_id'], state['greater_player_id']) + 17
+        if index < 17 or index > 20:
+            raise Exception("Invalid feature index")
+        obs[9][0][index] = 1
+
+        # 0/21~25: first hand suit
+        first_hand = state['current_round'][state['first_player_id']]
+        if first_hand is not None:
+            index = get_suit(first_hand[0]) + 21
+            if index < 21 or index > 25:
+                raise Exception("Invalid feature index")
+            obs[9][0][index] = 1
+
+        # 0/26~30: greater hand suit
+        greater_hand = state['greater_hand']
+        if greater_hand is not None:
+            index = get_suit(greater_hand[0]) + 26
+            if index < 26 or index > 30:
+                raise Exception("Invalid feature index")
+            obs[9][0][index] = 1
+
+        # 0/31~50: suit availability
+        suit_avail = state['suit_avail']
+        for i in range(0, 4):
+            for j in range(0, 5):
+                if suit_avail[i][j] == True:
+                    index = i * 5 + j + 31
+                    if index < 31 or index > 50:
+                        raise Exception("Invalid feature index")
+                    obs[9][0][index] = 1
+        
+        # 1/1~25 number of cards left in hand
+        obs[9][1][len(state['current_hand'])] = 1
 
         extracted_state = {'obs': obs, 'legal_actions': self._get_legal_actions(), 'trump': self.game.round.trump}
 

@@ -31,11 +31,13 @@ class TractorPlayer(object):
         state['others_hand'] = others_hands
         state['current_round'] = public['current_round'].copy()
         state['offseted_current_round'] = self.get_offseted_current_round(public['current_round'])
+        state['greater_hand'] = public['current_round'][public['greater_player_id']]
         state['current_player_id'] = public['current_player_id']
         state['first_player_id'] = public['first_player_id']
         state['greater_player_id'] = public['greater_player_id']
         state['guessed_others_hand'] = self.guess_othershand(public['suit_avail'], public['remaining_cards'], public['banker_id'], public['banker_cards'])
         state['remaining_cards'] = self.guess_banker(public['remaining_cards'], public['banker_id'], public['banker_cards'])
+        state['suit_avail'] = public['suit_avail']
         state['score'] = public['score']
         state['actions'] = actions
 

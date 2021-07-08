@@ -107,7 +107,7 @@ class TractorDQNModel(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV6\\tractor_dqn_2505k_2230k')
+        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV7\\tractor_dqn_1430k_best_779')
 
         with self.sess.as_default():
             with self.graph.as_default():
@@ -162,7 +162,7 @@ class TractorDQNModelVNext(Model):
                 )
                 self.dqn_agents.append(agent)
 
-        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV6\\tractor_dqn_2840k_2465k')
+        check_point_path = os.path.join(rlcard.__path__[0], 'models\\tractorV7\\tractor_dqn_2000k_best_769')
 
         with self.sess.as_default():
             with self.graph.as_default():

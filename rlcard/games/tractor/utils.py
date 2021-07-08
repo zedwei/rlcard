@@ -114,6 +114,9 @@ def trump_type_to_win(target_type):
 def is_same_suit(card_1, card_2):
     return get_suit(card_1) == get_suit(card_2)
 
+def get_seat_offset(source_seat, target_seat):
+    return (target_seat + 4 - source_seat) % 4
+
 def tractor_sort_card(card_1, card_2):
     ''' Compare the rank of two cards of Card object
 
