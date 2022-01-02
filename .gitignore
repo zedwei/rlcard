@@ -19,3 +19,4 @@ dist/
 cfr_model/
 rlcard/models/
 models/
+photon_server_sdk/
